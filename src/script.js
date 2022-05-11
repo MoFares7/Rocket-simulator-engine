@@ -122,27 +122,44 @@ const cylinder2 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.25, 0.25, 0.
     new THREE.MeshBasicMaterial({ color: 0xff7600 }));
 
 
-const cylinder3 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.5, 0.5, 1.5, 50),
-    new THREE.MeshBasicMaterial({ color: 0xffffff }));
+const cylinder3 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.4, 0.4, 1.5, 50),
+    new THREE.MeshBasicMaterial({ color: 0xff1A225A }));
 
-const cylinder4 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.5, 0.5, 0.5, 50),
-    new THREE.MeshBasicMaterial({ color: 0x000000 }));
+const cylinder4 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.4, 0.4, 0.5, 50),
+    new THREE.MeshBasicMaterial({ color: 0xff6C6CA4 }));
 
-const cylinder5 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.5, 0.5, 1, 50),
-    new THREE.MeshBasicMaterial({ color: 0xffffff }));
+const cylinder5 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.4, 0.4, 1, 50),
+    new THREE.MeshBasicMaterial({ color: 0xff1A225A }));
+
+const cylinder6 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.4, 0.4, 0.3, 50),
+    new THREE.MeshBasicMaterial({ color: 0xff6C6CA4 }));
+
+const cylinder7 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.4, 0.4, 0.7, 50),
+    new THREE.MeshBasicMaterial({ color: 0xff1A225A }));
+
+const geoCone = new THREE.Mesh(new THREE.ConeGeometry(0.4, 0.5, 118),
+    new THREE.MeshBasicMaterial({ color: 0xff1A225A }));
+
+
+
 
 cylinder.add(cylinder1);
 cylinder.add(cylinder2);
 cylinder.add(cylinder3);
 cylinder.add(cylinder4);
 cylinder.add(cylinder5);
+cylinder.add(cylinder6);
+cylinder.add(cylinder7);
+cylinder.add(geoCone);
 
 cylinder1.position.y = -0.2;
 cylinder2.position.y = -0.1;
 cylinder3.position.y = 0.7;
 cylinder4.position.y = 1.7;
-cylinder5.position.y = 2.6;
-
+cylinder5.position.y = 2.45;
+cylinder6.position.y = 3.1;
+geoCone.position.y = 4.5;
+cylinder7.position.y = 3.6;
 /**
  * Sizes
  */
