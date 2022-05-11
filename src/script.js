@@ -121,12 +121,21 @@ const cylinder1 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.4, 0.4, 0.5,
 const cylinder2 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.8, 0.8, 1.5, 50),
     new THREE.MeshBasicMaterial({ color: 0xffffff }));
 
+const cylinder3 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.8, 0.8, 0.5, 50),
+    new THREE.MeshBasicMaterial({ color: 0xffff11 }));
+
+const cylinder4 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.8, 0.8, 1.5, 50),
+    new THREE.MeshBasicMaterial({ color: 0xffffff }));
 
 cylinder.add(cylinder1);
 cylinder.add(cylinder2);
+cylinder.add(cylinder3);
+cylinder.add(cylinder4);
 
 cylinder1.position.y = 0;
 cylinder2.position.y = 1;
+cylinder3.position.y = 2;
+cylinder4.position.y = 3;
 
 /**
  * Sizes
