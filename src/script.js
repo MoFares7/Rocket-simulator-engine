@@ -50,9 +50,6 @@ grassRoughnessTexture.wrapT = THREE.RepeatWrapping
 /**
  * Materials
  */
-const material = new THREE.MeshStandardMaterial({ color: '#4CAF50' })
-material.roughness = 0
-gui.add(material, 'metalness').min(0).max(1).step(0.001)
 
 /**
  * Objects
@@ -108,8 +105,28 @@ doorLight.position.set(4, 2.2, -0.7)
 zhouse.add(doorLight)
 
 
+/**
+ * Draw Rocket
+ */
+
+// Group
+const cylinder = new THREE.Group()
+scene.add(cylinder)
 
 
+
+const cylinder1 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.4, 0.4, 0.5, 50),
+    new THREE.MeshBasicMaterial({ color: 0xff0000 }));
+
+const cylinder2 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.8, 0.8, 1.5, 50),
+    new THREE.MeshBasicMaterial({ color: 0xffffff }));
+
+
+cylinder.add(cylinder1);
+cylinder.add(cylinder2);
+
+cylinder1.position.y = 0;
+cylinder2.position.y = 1;
 
 /**
  * Sizes
