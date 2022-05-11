@@ -115,27 +115,33 @@ scene.add(cylinder)
 
 
 
-const cylinder1 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.4, 0.4, 0.5, 50),
+const cylinder1 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.2, 0.2, 0.1, 50),
     new THREE.MeshBasicMaterial({ color: 0xff0000 }));
 
-const cylinder2 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.8, 0.8, 1.5, 50),
+const cylinder2 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.25, 0.25, 0.15, 50),
+    new THREE.MeshBasicMaterial({ color: 0xff7600 }));
+
+
+const cylinder3 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.5, 0.5, 1.5, 50),
     new THREE.MeshBasicMaterial({ color: 0xffffff }));
 
-const cylinder3 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.8, 0.8, 0.5, 50),
-    new THREE.MeshBasicMaterial({ color: 0xffff11 }));
+const cylinder4 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.5, 0.5, 0.5, 50),
+    new THREE.MeshBasicMaterial({ color: 0x000000 }));
 
-const cylinder4 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.8, 0.8, 1.5, 50),
+const cylinder5 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.5, 0.5, 1, 50),
     new THREE.MeshBasicMaterial({ color: 0xffffff }));
 
 cylinder.add(cylinder1);
 cylinder.add(cylinder2);
 cylinder.add(cylinder3);
 cylinder.add(cylinder4);
+cylinder.add(cylinder5);
 
-cylinder1.position.y = 0;
-cylinder2.position.y = 1;
-cylinder3.position.y = 2;
-cylinder4.position.y = 3;
+cylinder1.position.y = -0.2;
+cylinder2.position.y = -0.1;
+cylinder3.position.y = 0.7;
+cylinder4.position.y = 1.7;
+cylinder5.position.y = 2.6;
 
 /**
  * Sizes
