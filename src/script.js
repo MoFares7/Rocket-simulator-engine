@@ -110,8 +110,8 @@ zhouse.add(doorLight)
  */
 
 // Group
-const cylinder = new THREE.Group()
-scene.add(cylinder)
+const rocket = new THREE.Group()
+scene.add(rocket)
 
 
 
@@ -119,7 +119,7 @@ const cylinder1 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.2, 0.2, 0.1,
     new THREE.MeshBasicMaterial({ color: 0xff0000 }));
 
 const cylinder2 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.25, 0.25, 0.15, 50),
-    new THREE.MeshBasicMaterial({ color: 0xff7600 }));
+    new THREE.MeshBasicMaterial({ color: 0xff6C6CA4 }));
 
 
 const cylinder3 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.4, 0.4, 1.5, 50),
@@ -137,20 +137,25 @@ const cylinder6 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.4, 0.4, 0.3,
 const cylinder7 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.4, 0.4, 0.7, 50),
     new THREE.MeshBasicMaterial({ color: 0xff1A225A }));
 
-const geoCone = new THREE.Mesh(new THREE.ConeGeometry(0.4, 0.5, 118),
+
+const cylinder8 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.4, 0.4, 0.2, 50),
+    new THREE.MeshBasicMaterial({ color: 0xff6C6CA4 }));
+
+const geoCone = new THREE.Mesh(new THREE.ConeGeometry(0.4, 0.5, 40),
     new THREE.MeshBasicMaterial({ color: 0xff1A225A }));
 
 
 
 
-cylinder.add(cylinder1);
-cylinder.add(cylinder2);
-cylinder.add(cylinder3);
-cylinder.add(cylinder4);
-cylinder.add(cylinder5);
-cylinder.add(cylinder6);
-cylinder.add(cylinder7);
-cylinder.add(geoCone);
+rocket.add(cylinder1);
+rocket.add(cylinder2);
+rocket.add(cylinder3);
+rocket.add(cylinder4);
+rocket.add(cylinder5);
+rocket.add(cylinder6);
+rocket.add(cylinder7);
+rocket.add(cylinder8);
+rocket.add(geoCone);
 
 cylinder1.position.y = -0.2;
 cylinder2.position.y = -0.1;
@@ -158,8 +163,9 @@ cylinder3.position.y = 0.7;
 cylinder4.position.y = 1.7;
 cylinder5.position.y = 2.45;
 cylinder6.position.y = 3.1;
-geoCone.position.y = 4.5;
 cylinder7.position.y = 3.6;
+cylinder8.position.y = 4.06;
+geoCone.position.y = 4.4;
 /**
  * Sizes
  */
