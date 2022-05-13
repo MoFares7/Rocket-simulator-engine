@@ -119,8 +119,6 @@ const createRocket = () => {
     const rocket = new THREE.Group()
     scene.add(rocket)
 
-
-
     const cylinder1 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.2, 0.2, 0.1, 50),
         new THREE.MeshBasicMaterial({ color: 0xff0000 }));
 
@@ -129,27 +127,25 @@ const createRocket = () => {
 
 
     const cylinder3 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.4, 0.4, 1.5, 50),
-        new THREE.MeshBasicMaterial({ color: 0xff1A225A }));
+        new THREE.MeshBasicMaterial({ color: 0x212121 }));
 
     const cylinder4 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.4, 0.4, 0.5, 50),
-        new THREE.MeshBasicMaterial({ color: 0xff6C6CA4 }));
+        new THREE.MeshBasicMaterial({ color: 0xD6D6D6 }));
 
     const cylinder5 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.4, 0.4, 1, 50),
-        new THREE.MeshBasicMaterial({ color: 0xff1A225A }));
+        new THREE.MeshBasicMaterial({ color: 0x212121 }));
 
     const cylinder6 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.4, 0.4, 0.3, 50),
-        new THREE.MeshBasicMaterial({ color: 0xff6C6CA4 }));
+        new THREE.MeshBasicMaterial({ color: 0xD6D6D6 }));
 
     const cylinder7 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.4, 0.4, 0.7, 50),
-        new THREE.MeshBasicMaterial({ color: 0xff1A225A }));
-
+        new THREE.MeshBasicMaterial({ color: 0x212121 }));
 
     const cylinder8 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.4, 0.4, 0.2, 50),
-        new THREE.MeshBasicMaterial({ color: 0xff6C6CA4 }));
+        new THREE.MeshBasicMaterial({ color: 0xD6D6D6 }));
 
-    const geoCone = new THREE.Mesh(new THREE.ConeGeometry(0.4, 0.5, 40),
-        new THREE.MeshBasicMaterial({ color: 0xff1A225A }));
-
+    const geoCone = new THREE.Mesh(new THREE.SphereGeometry(0.38, 20, 12),
+        new THREE.MeshBasicMaterial({ color: 0x212121 }));
 
 
 
@@ -171,7 +167,10 @@ const createRocket = () => {
     cylinder6.position.y = 3.1;
     cylinder7.position.y = 3.6;
     cylinder8.position.y = 4.06;
-    geoCone.position.y = 4.4;
+    geoCone.position.y = 4.2;
+
+
+
 }
 
 const createLunch = () => {
@@ -180,7 +179,7 @@ const createLunch = () => {
         const lunch = new THREE.Group()
         scene.add(lunch);
 
-        const base = new THREE.Mesh(new THREE.BoxBufferGeometry(2, 1, 4),
+        const base = new THREE.Mesh(new THREE.BoxBufferGeometry(3, 1, 4),
             new THREE.MeshBasicMaterial({ color: 0x000000 }));
         lunch.add(base);
 
