@@ -26,7 +26,7 @@ const grassNormalTexture = textureLoader.load('/textures/grass/normal.jpg')
 const grassRoughnessTexture = textureLoader.load('/textures/grass/roughness.jpg')
 
 
-const bgTexture = textureLoader.load('/textures/background/images.jpg');
+const bgTexture = textureLoader.load('/textures/background/images1.jpg');
 scene.background = bgTexture;
 /**
  * Darw Grass
