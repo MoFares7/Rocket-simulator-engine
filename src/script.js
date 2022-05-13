@@ -20,15 +20,14 @@ const scene = new THREE.Scene()
  * Textures
  */
 const textureLoader = new THREE.TextureLoader()
-
-const doorColorTexture = textureLoader.load('/textures/door/color.jpg')
-const doorAmbientOcclusionTexture = textureLoader.load('/textures/door/ambientOcclusion.jpg')
-const doorNormalTexture = textureLoader.load('/textures/door/normal.jpg')
 const grassColorTexture = textureLoader.load('/textures/grass/color.jpg')
 const grassAmbientOcclusionTexture = textureLoader.load('/textures/grass/ambientOcclusion.jpg')
 const grassNormalTexture = textureLoader.load('/textures/grass/normal.jpg')
 const grassRoughnessTexture = textureLoader.load('/textures/grass/roughness.jpg')
 
+
+const bgTexture = textureLoader.load('/textures/background/images.jpg');
+scene.background = bgTexture;
 /**
  * Darw Grass
  */
