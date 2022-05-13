@@ -11,10 +11,18 @@ const gui = new dat.GUI()
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
+window.addEventListener("load", init, false);
 
+function init() {
+    createScene();
+    createLights();
+    createRocket();
+    createLunch();
 
-// Scene
+}
+
 const scene = new THREE.Scene()
+
 
 /**
  * Textures
@@ -27,153 +35,166 @@ const grassRoughnessTexture = textureLoader.load('/textures/grass/roughness.jpg'
 
 
 const bgTexture = textureLoader.load('/textures/background/images1.jpg');
-scene.background = bgTexture;
-/**
- * Darw Grass
- */
-grassColorTexture.repeat.set(8, 8)
-grassAmbientOcclusionTexture.repeat.set(8, 8)
-grassNormalTexture.repeat.set(8, 8)
-grassRoughnessTexture.repeat.set(8, 8)
-
-grassColorTexture.wrapS = THREE.RepeatWrapping
-grassAmbientOcclusionTexture.wrapS = THREE.RepeatWrapping
-grassNormalTexture.wrapS = THREE.RepeatWrapping
-grassRoughnessTexture.wrapS = THREE.RepeatWrapping
-
-grassColorTexture.wrapT = THREE.RepeatWrapping
-grassAmbientOcclusionTexture.wrapT = THREE.RepeatWrapping
-grassNormalTexture.wrapT = THREE.RepeatWrapping
-grassRoughnessTexture.wrapT = THREE.RepeatWrapping
-
-/**
- * Materials
- */
-
-/**
- * Objects
- */
-
-// Group
-const zhouse = new THREE.Group()
-scene.add(zhouse)
-
-// floor
-const floor = new THREE.Mesh(
-        new THREE.PlaneBufferGeometry(20, 20),
-        new THREE.MeshStandardMaterial({
-            map: grassColorTexture,
-            aoMap: grassAmbientOcclusionTexture,
-            normalMap: grassNormalTexture,
-            roughnessMap: grassRoughnessTexture
-        })
-    )
-    // plane.receiveShadow = true
-floor.geometry.setAttribute('uv2', new THREE.Float32BufferAttribute(floor.geometry.attributes.uv.array, 2))
-floor.rotation.x = -Math.PI * 0.5
-floor.position.y = -0.3
+// Scene
+const createScene = () => {
 
 
-scene.add(floor)
+    scene.background = bgTexture;
+    /**
+     * Darw Grass
+     */
+    grassColorTexture.repeat.set(8, 8)
+    grassAmbientOcclusionTexture.repeat.set(8, 8)
+    grassNormalTexture.repeat.set(8, 8)
+    grassRoughnessTexture.repeat.set(8, 8)
+
+    grassColorTexture.wrapS = THREE.RepeatWrapping
+    grassAmbientOcclusionTexture.wrapS = THREE.RepeatWrapping
+    grassNormalTexture.wrapS = THREE.RepeatWrapping
+    grassRoughnessTexture.wrapS = THREE.RepeatWrapping
+
+    grassColorTexture.wrapT = THREE.RepeatWrapping
+    grassAmbientOcclusionTexture.wrapT = THREE.RepeatWrapping
+    grassNormalTexture.wrapT = THREE.RepeatWrapping
+    grassRoughnessTexture.wrapT = THREE.RepeatWrapping
+
+    // floor
+    const floor = new THREE.Mesh(
+            new THREE.PlaneBufferGeometry(20, 20),
+            new THREE.MeshStandardMaterial({
+                map: grassColorTexture,
+                aoMap: grassAmbientOcclusionTexture,
+                normalMap: grassNormalTexture,
+                roughnessMap: grassRoughnessTexture
+            })
+        )
+        // plane.receiveShadow = true
+    floor.geometry.setAttribute('uv2', new THREE.Float32BufferAttribute(floor.geometry.attributes.uv.array, 2))
+    floor.rotation.x = -Math.PI * 0.5
+    floor.position.y = -0.3
 
 
-/**
- * Lights
- */
-// Ambient light
-const ambientLight = new THREE.AmbientLight('#b9d5ff', 0.3)
-scene.add(ambientLight)
+    scene.add(floor)
 
-// Directional light
-const moonLight = new THREE.DirectionalLight('#b9d5ff', 0.12)
-moonLight.castShadow = true
-moonLight.shadow.mapSize.width = 256
-moonLight.shadow.mapSize.height = 256
-moonLight.shadow.camera.far = 15
-moonLight.position.set(4, 5, -2)
-scene.add(moonLight)
+}
 
-
-const doorLight = new THREE.PointLight('#ff7d46', 1, 17)
-doorLight.castShadow = true
-doorLight.shadow.mapSize.width = 1256
-doorLight.shadow.mapSize.height = 1256
-doorLight.shadow.camera.far = 7
-
-doorLight.position.set(4, 2.2, -0.7)
-zhouse.add(doorLight)
-
-
-/**
- * Draw Rocket
- */
-
-// Group
-const rocket = new THREE.Group()
-scene.add(rocket)
+const createLights = () => {
+    // Group
+    const light = new THREE.Group()
+    scene.add(light)
 
 
 
-const cylinder1 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.2, 0.2, 0.1, 50),
-    new THREE.MeshBasicMaterial({ color: 0xff0000 }));
+    /**
+     * Lights
+     */
+    // Ambient light
+    const ambientLight = new THREE.AmbientLight('#b9d5ff', 0.3)
+    light.add(ambientLight)
 
-const cylinder2 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.25, 0.25, 0.15, 50),
-    new THREE.MeshBasicMaterial({ color: 0xff6C6CA4 }));
-
-
-const cylinder3 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.4, 0.4, 1.5, 50),
-    new THREE.MeshBasicMaterial({ color: 0xff1A225A }));
-
-const cylinder4 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.4, 0.4, 0.5, 50),
-    new THREE.MeshBasicMaterial({ color: 0xff6C6CA4 }));
-
-const cylinder5 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.4, 0.4, 1, 50),
-    new THREE.MeshBasicMaterial({ color: 0xff1A225A }));
-
-const cylinder6 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.4, 0.4, 0.3, 50),
-    new THREE.MeshBasicMaterial({ color: 0xff6C6CA4 }));
-
-const cylinder7 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.4, 0.4, 0.7, 50),
-    new THREE.MeshBasicMaterial({ color: 0xff1A225A }));
+    // Directional light
+    const moonLight = new THREE.DirectionalLight('#b9d5ff', 0.12)
+    moonLight.castShadow = true
+    moonLight.shadow.mapSize.width = 256
+    moonLight.shadow.mapSize.height = 256
+    moonLight.shadow.camera.far = 15
+    moonLight.position.set(4, 5, -2)
+    light.add(moonLight)
 
 
-const cylinder8 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.4, 0.4, 0.2, 50),
-    new THREE.MeshBasicMaterial({ color: 0xff6C6CA4 }));
+    const doorLight = new THREE.PointLight('#ff7d46', 1, 17)
+    doorLight.castShadow = true
+    doorLight.shadow.mapSize.width = 1256
+    doorLight.shadow.mapSize.height = 1256
+    doorLight.shadow.camera.far = 7
 
-const geoCone = new THREE.Mesh(new THREE.ConeGeometry(0.4, 0.5, 40),
-    new THREE.MeshBasicMaterial({ color: 0xff1A225A }));
+    doorLight.position.set(4, 2.2, -0.7)
+    light.add(doorLight)
+
+
+}
+
+const createRocket = () => {
+    // Group
+    const rocket = new THREE.Group()
+    scene.add(rocket)
+
+
+
+    const cylinder1 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.2, 0.2, 0.1, 50),
+        new THREE.MeshBasicMaterial({ color: 0xff0000 }));
+
+    const cylinder2 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.25, 0.25, 0.15, 50),
+        new THREE.MeshBasicMaterial({ color: 0xff6C6CA4 }));
+
+
+    const cylinder3 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.4, 0.4, 1.5, 50),
+        new THREE.MeshBasicMaterial({ color: 0xff1A225A }));
+
+    const cylinder4 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.4, 0.4, 0.5, 50),
+        new THREE.MeshBasicMaterial({ color: 0xff6C6CA4 }));
+
+    const cylinder5 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.4, 0.4, 1, 50),
+        new THREE.MeshBasicMaterial({ color: 0xff1A225A }));
+
+    const cylinder6 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.4, 0.4, 0.3, 50),
+        new THREE.MeshBasicMaterial({ color: 0xff6C6CA4 }));
+
+    const cylinder7 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.4, 0.4, 0.7, 50),
+        new THREE.MeshBasicMaterial({ color: 0xff1A225A }));
+
+
+    const cylinder8 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.4, 0.4, 0.2, 50),
+        new THREE.MeshBasicMaterial({ color: 0xff6C6CA4 }));
+
+    const geoCone = new THREE.Mesh(new THREE.ConeGeometry(0.4, 0.5, 40),
+        new THREE.MeshBasicMaterial({ color: 0xff1A225A }));
 
 
 
 
-rocket.add(cylinder1);
-rocket.add(cylinder2);
-rocket.add(cylinder3);
-rocket.add(cylinder4);
-rocket.add(cylinder5);
-rocket.add(cylinder6);
-rocket.add(cylinder7);
-rocket.add(cylinder8);
-rocket.add(geoCone);
+    rocket.add(cylinder1);
+    rocket.add(cylinder2);
+    rocket.add(cylinder3);
+    rocket.add(cylinder4);
+    rocket.add(cylinder5);
+    rocket.add(cylinder6);
+    rocket.add(cylinder7);
+    rocket.add(cylinder8);
+    rocket.add(geoCone);
 
-cylinder1.position.y = -0.2;
-cylinder2.position.y = -0.1;
-cylinder3.position.y = 0.7;
-cylinder4.position.y = 1.7;
-cylinder5.position.y = 2.45;
-cylinder6.position.y = 3.1;
-cylinder7.position.y = 3.6;
-cylinder8.position.y = 4.06;
-geoCone.position.y = 4.4;
-/**
- * Sizes
- */
+    cylinder1.position.y = -0.2;
+    cylinder2.position.y = -0.1;
+    cylinder3.position.y = 0.7;
+    cylinder4.position.y = 1.7;
+    cylinder5.position.y = 2.45;
+    cylinder6.position.y = 3.1;
+    cylinder7.position.y = 3.6;
+    cylinder8.position.y = 4.06;
+    geoCone.position.y = 4.4;
+}
+
+const createLunch = () => {
+
+        // Group
+        const lunch = new THREE.Group()
+        scene.add(lunch);
+
+        const base = new THREE.Mesh(new THREE.BoxBufferGeometry(2, 1, 4),
+            new THREE.MeshBasicMaterial({ color: 0x000000 }));
+        lunch.add(base);
+
+        base.position.y = -0.2;
+    }
+    /**
+     * Sizes
+     */
 const sizes = {
     width: window.innerWidth,
     height: window.innerHeight
 }
 
-window.addEventListener('resize', () => {
+window.addEventListener('resize', init => {
     // Update sizes
     sizes.width = window.innerWidth
     sizes.height = window.innerHeight
