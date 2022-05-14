@@ -20,9 +20,7 @@ function init() {
     createLunch();
 
 }
-
 const scene = new THREE.Scene()
-
 
 /**
  * Textures
@@ -32,9 +30,8 @@ const grassColorTexture = textureLoader.load('/textures/grass/color.jpg')
 const grassAmbientOcclusionTexture = textureLoader.load('/textures/grass/ambientOcclusion.jpg')
 const grassNormalTexture = textureLoader.load('/textures/grass/normal.jpg')
 const grassRoughnessTexture = textureLoader.load('/textures/grass/roughness.jpg')
-
-
 const bgTexture = textureLoader.load('/textures/background/images1.jpg');
+
 // Scene
 const createScene = () => {
 
@@ -169,6 +166,8 @@ const createRocket = () => {
     cylinder8.position.y = 4.06;
     geoCone.position.y = 4.2;
 
+    rocket.position.y = 3;
+
 
 
 }
@@ -179,11 +178,18 @@ const createLunch = () => {
         const lunch = new THREE.Group()
         scene.add(lunch);
 
-        const base = new THREE.Mesh(new THREE.BoxBufferGeometry(3, 1, 4),
+        const base = new THREE.Mesh(new THREE.BoxBufferGeometry(3, 3, 4),
             new THREE.MeshBasicMaterial({ color: 0x000000 }));
-        lunch.add(base);
+        const base1 = new THREE.Mesh(new THREE.PlaneBufferGeometry(2, 1, 4),
+            new THREE.MeshBasicMaterial({ color: 0xD6D6D6 }));
 
-        base.position.y = -0.2;
+
+        lunch.add(base);
+        lunch.add(base1);
+
+        base.position.y = 1.2;
+        base1.position.z = 2.02;
+        base1.position.y = 1.5;
     }
     /**
      * Sizes
@@ -212,9 +218,9 @@ window.addEventListener('resize', init => {
  */
 // Base camera
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
-camera.position.x = 1
-camera.position.y = 1
-camera.position.z = 2
+camera.position.x = 12
+camera.position.y = 4
+camera.position.z = 0
 scene.add(camera)
 
 // Controls
