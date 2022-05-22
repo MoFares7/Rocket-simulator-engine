@@ -166,7 +166,7 @@ const createRocket = () => {
     cylinder8.position.y = 4.06;
     geoCone.position.y = 4.2;
 
-    rocket.position.y = 3;
+    rocket.position.y = 4;
 
 
 
@@ -178,18 +178,31 @@ const createLaunch = () => {
         const lunch = new THREE.Group()
         scene.add(lunch);
 
-        const base = new THREE.Mesh(new THREE.BoxBufferGeometry(3, 3, 6),
+        const base = new THREE.Mesh(new THREE.BoxBufferGeometry(3, 3, 5.5),
             new THREE.MeshBasicMaterial({ color: 0x000000 }));
+
         const base1 = new THREE.Mesh(new THREE.PlaneBufferGeometry(2, 1, 4),
             new THREE.MeshBasicMaterial({ color: 0xD6D6D6 }));
+
+        const stand1 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.6, 0.6, 1.1, 50),
+            new THREE.MeshBasicMaterial({ color: 0x000000 }));
+
+        const stand2 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.6, 0.6, 1.1, 50),
+            new THREE.MeshBasicMaterial({ color: 0x000000 }));
+
 
 
         lunch.add(base);
         lunch.add(base1);
+        lunch.add(stand1);
+        lunch.add(stand2);
 
-        base.position.y = 1.2;
-        base1.position.z = 3.02;
-        base1.position.y = 1.5;
+
+        base.position.y = 2.2;
+        base1.position.z = 2.9;
+        base1.position.y = 2.5;
+        stand1.position.set(0, 0.2, 2);
+        stand2.position.set(0, 0.2, -2);
     }
     /**
      * Sizes
