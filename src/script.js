@@ -17,7 +17,7 @@ function init() {
     createScene();
     createLights();
     createRocket();
-    createLunch();
+    createLaunch();
 
 }
 const scene = new THREE.Scene()
@@ -172,13 +172,13 @@ const createRocket = () => {
 
 }
 
-const createLunch = () => {
+const createLaunch = () => {
 
         // Group
         const lunch = new THREE.Group()
         scene.add(lunch);
 
-        const base = new THREE.Mesh(new THREE.BoxBufferGeometry(3, 3, 4),
+        const base = new THREE.Mesh(new THREE.BoxBufferGeometry(3, 3, 6),
             new THREE.MeshBasicMaterial({ color: 0x000000 }));
         const base1 = new THREE.Mesh(new THREE.PlaneBufferGeometry(2, 1, 4),
             new THREE.MeshBasicMaterial({ color: 0xD6D6D6 }));
@@ -188,7 +188,7 @@ const createLunch = () => {
         lunch.add(base1);
 
         base.position.y = 1.2;
-        base1.position.z = 2.02;
+        base1.position.z = 3.02;
         base1.position.y = 1.5;
     }
     /**
