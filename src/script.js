@@ -2,6 +2,7 @@ import './style.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'dat.gui'
+import { TWEEN } from 'three/examples/jsm/libs/tween.module.min'
 
 /**
  * Base
@@ -31,7 +32,12 @@ const grassAmbientOcclusionTexture = textureLoader.load('/textures/grass/ambient
 const grassNormalTexture = textureLoader.load('/textures/grass/normal.jpg')
 const grassRoughnessTexture = textureLoader.load('/textures/grass/roughness.jpg')
 const bgTexture = textureLoader.load('/textures/background/images1.jpg');
-
+const launchColorTexture = textureLoader.load('/textures/launch/Wall_BaseColor.jpg');
+const launchAmbientTexture = textureLoader.load('/textures/launch/Wall_Ambient.jpg');
+const launchHeightTexture = textureLoader.load('/textures/launch/Wall_Height.png');
+const launchNormalTexture = textureLoader.load('/textures/launch/Wall_Normal.jpg');
+const launchRoughnessTexture = textureLoader.load('/textures/launch/Wall_Roughness.jpg');
+const launchMetrialTexture = textureLoader.load('/textures/launch/Wall_metrial.jpg');
 // Scene
 const createScene = () => {
 
@@ -57,7 +63,7 @@ const createScene = () => {
 
     // floor
     const floor = new THREE.Mesh(
-            new THREE.PlaneBufferGeometry(20, 20),
+            new THREE.PlaneBufferGeometry(80, 80),
             new THREE.MeshStandardMaterial({
                 map: grassColorTexture,
                 aoMap: grassAmbientOcclusionTexture,
@@ -179,30 +185,30 @@ const createLaunch = () => {
         scene.add(lunch);
 
         const base = new THREE.Mesh(new THREE.BoxBufferGeometry(3, 3, 5.5),
-            new THREE.MeshBasicMaterial({ color: 0x000000 }));
+            new THREE.MeshStandardMaterial({
+                map: launchColorTexture,
+                normalMap: launchNormalTexture,
+                metalnessMap: launchMetrialTexture,
+                metalness: 0.1,
+                displacementMap: launchHeightTexture,
+                displacementScale: 0.002,
+                roughnessMap: launchRoughnessTexture,
+                roughness: 32
+
+
+
+            }))
 
         const base1 = new THREE.Mesh(new THREE.PlaneBufferGeometry(2, 1, 4),
             new THREE.MeshBasicMaterial({ color: 0xD6D6D6 }));
 
-        const stand1 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.6, 0.6, 1.1, 50),
-            new THREE.MeshBasicMaterial({ color: 0x000000 }));
-
-        const stand2 = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.6, 0.6, 1.1, 50),
-            new THREE.MeshBasicMaterial({ color: 0x000000 }));
-
-
-
         lunch.add(base);
         lunch.add(base1);
-        lunch.add(stand1);
-        lunch.add(stand2);
 
+        base.position.y = 1.2;
+        base1.position.z = 2.8;
+        base1.position.y = 1.5;
 
-        base.position.y = 2.2;
-        base1.position.z = 2.9;
-        base1.position.y = 2.5;
-        stand1.position.set(0, 0.2, 2);
-        stand2.position.set(0, 0.2, -2);
     }
     /**
      * Sizes
@@ -240,6 +246,15 @@ scene.add(camera)
 const controls = new OrbitControls(camera, canvas)
 controls.enableDamping = true
 
+document.onkeydown = function(e) {
+    if (e.keyCode === 37) {
+        rocket.position.y -= 1;
+    }
+    if (e.keyCode === 38) {
+        rocket.position.y += 1;
+    }
+
+}
 
 /**
  * Renderer
@@ -247,12 +262,20 @@ controls.enableDamping = true
 const renderer = new THREE.WebGLRenderer({
     canvas: canvas
 })
+document.body.appendChild(renderer.domElement)
 
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
     //renderer.setClearColor('#262837')
 
 const clock = new THREE.Clock()
+
+function animate() {
+    requestAnimationFrame(animate);
+    TWEEN.update();
+    renderer.render(scene, camera);
+}
+animate();
 
 const tick = () => {
     const elapsedTime = clock.getElapsedTime()
