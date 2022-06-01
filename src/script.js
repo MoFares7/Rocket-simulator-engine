@@ -17,8 +17,9 @@ window.addEventListener("load", init, false);
 function init() {
     createScene();
     createLights();
-    createRocket();
-    createLaunch();
+    //createRocket1();
+    createRocket2();
+    createLaunch1();
 
 }
 const scene = new THREE.Scene()
@@ -58,7 +59,7 @@ const createScene = () => {
 
     // floor
     const floor = new THREE.Mesh(
-            new THREE.PlaneBufferGeometry(40, 40),
+            new THREE.PlaneBufferGeometry(60, 60),
             new THREE.MeshStandardMaterial({
                 map: grassColorTexture,
                 aoMap: grassAmbientOcclusionTexture,
@@ -112,7 +113,7 @@ const createLights = () => {
 
 }
 
-const createRocket = () => {
+const createRocket1 = () => {
     const rocket1MetrialTexture = textureLoader.load('static/textures/rocket/bodyRocket1/Material.jpg');
     const rocket1ColorTexture = textureLoader.load('/textures/rocket/bodyRocket1/basecolor.jpg');
 
@@ -276,6 +277,166 @@ const createRocket = () => {
 
 }
 
+const createRocket2 = () => {
+
+    const rocket2MetrialTexture = textureLoader.load('static/textures/rocket/bodyRocket2/Material.jpg');
+    const rocket2ColorTexture = textureLoader.load('/textures/rocket/bodyRocket2/Plastic_basecolor.jpg');
+
+    const rocket2AmbientTexture = textureLoader.load('/textures/rocket/bodyRocket2/Plastic_ambientOcclusion.jpg');
+    const rocket2EmissiveTexture = textureLoader.load('/textures/rocket/bodyRocket2/emissive.jpg');
+    const rocket2HeightTexture = textureLoader.load('/textures/rocket/bodyRocket2/Plastic_height.png');
+    const rocket2NormalTexture = textureLoader.load('/textures/rocket/bodyRocket2/Plastic_normal.jpg');
+    const rocket2roughnessTexture = textureLoader.load('/textures/rocket/bodyRocket2/Plastic_roughness.jpg');
+
+    const rollMetrialTexture = textureLoader.load('static/textures/rocket/bodyRocket2/Material_roll.jpg');
+    const rollColorTexture = textureLoader.load('/textures/rocket/bodyRocket2/Metal_basecolor.jpg');
+
+    const rollAmbientTexture = textureLoader.load('/textures/rocket/bodyRocket2/Metal_ambientOcclusion.jpg');
+
+    const rollHeightTexture = textureLoader.load('/textures/rocket/bodyRocket2/Metal_height.png');
+    const rollNormalTexture = textureLoader.load('/textures/rocket/bodyRocket2/Metal_normal.jpg');
+    const rollroughnessTexture = textureLoader.load('/textures/rocket/bodyRocket2/Metal_roughness.jpg');
+
+    const rocket2 = new THREE.Group()
+    scene.add(rocket2);
+
+    const body0 = new THREE.Mesh(
+        new THREE.CylinderGeometry(1, 1, 1, 50),
+        new THREE.MeshStandardMaterial({
+            map: rocket2ColorTexture,
+            normalMap: rocket2NormalTexture,
+            metalnessMap: rocket2MetrialTexture,
+            metalness: 0.1,
+            aoMap: rocket2AmbientTexture,
+
+            roughnessMap: rocket2roughnessTexture,
+            roughness: 32,
+
+
+        }));
+
+    const body1 = new THREE.Mesh(
+        new THREE.CylinderGeometry(1.5, 1.5, 5, 50),
+        new THREE.MeshStandardMaterial({
+            map: rocket2ColorTexture,
+            normalMap: rocket2NormalTexture,
+            metalnessMap: rocket2MetrialTexture,
+            metalness: 0.1,
+            aoMap: rocket2AmbientTexture,
+
+            roughnessMap: rocket2roughnessTexture,
+            roughness: 32,
+
+
+        }));
+
+    const roll1 = new THREE.Mesh(
+        new THREE.CylinderGeometry(1.5, 1.5, 0.5, 50),
+        new THREE.MeshStandardMaterial({
+            map: rollColorTexture,
+            normalMap: rollNormalTexture,
+            metalnessMap: rollMetrialTexture,
+            metalness: 0.1,
+            aoMap: rollAmbientTexture,
+
+            roughnessMap: rollroughnessTexture,
+            roughness: 32,
+
+
+        }));
+
+    const body2 = new THREE.Mesh(
+        new THREE.CylinderGeometry(1.5, 1.5, 3, 50),
+        new THREE.MeshStandardMaterial({
+            map: rocket2ColorTexture,
+            normalMap: rocket2NormalTexture,
+            metalnessMap: rocket2MetrialTexture,
+            metalness: 0.1,
+            aoMap: rocket2AmbientTexture,
+
+            roughnessMap: rocket2roughnessTexture,
+            roughness: 32,
+
+
+        }));
+
+    const roll2 = new THREE.Mesh(
+        new THREE.CylinderGeometry(1.5, 1.5, 0.5, 50),
+        new THREE.MeshStandardMaterial({
+            map: rollColorTexture,
+            normalMap: rollNormalTexture,
+            metalnessMap: rollMetrialTexture,
+            metalness: 0.1,
+            aoMap: rollAmbientTexture,
+
+            roughnessMap: rollroughnessTexture,
+            roughness: 32,
+
+
+        }));
+
+    const body3 = new THREE.Mesh(
+        new THREE.CylinderGeometry(1.2, 1.5, 2, 50),
+        new THREE.MeshStandardMaterial({
+            map: rocket2ColorTexture,
+            normalMap: rocket2NormalTexture,
+            metalnessMap: rocket2MetrialTexture,
+            metalness: 0.1,
+            aoMap: rocket2AmbientTexture,
+            roughnessMap: rocket2roughnessTexture,
+            roughness: 32,
+        }));
+
+    const roll3 = new THREE.Mesh(
+        new THREE.CylinderGeometry(1.1, 1.2, 0.5, 50),
+        new THREE.MeshStandardMaterial({
+            map: rollColorTexture,
+            normalMap: rollNormalTexture,
+            metalnessMap: rollMetrialTexture,
+            metalness: 0.1,
+            aoMap: rollAmbientTexture,
+
+            roughnessMap: rollroughnessTexture,
+            roughness: 32,
+
+
+        }));
+
+
+    const body4 = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.1, 1.1, 1, 50),
+        new THREE.MeshStandardMaterial({
+            map: rocket2ColorTexture,
+            normalMap: rocket2NormalTexture,
+            metalnessMap: rocket2MetrialTexture,
+            metalness: 0.1,
+            aoMap: rocket2AmbientTexture,
+
+            roughnessMap: rocket2roughnessTexture,
+            roughness: 32,
+        }));
+
+
+    body0.position.y = 2.5;
+    body1.position.y = 5;
+    roll1.position.y = 7.76;
+    body2.position.y = 9.5;
+    roll2.position.y = 11.2;
+    body3.position.y = 12.3;
+    roll3.position.y = 13.4;
+    body4.position.y = 14.1;
+    rocket2.position.y = 4;
+
+    rocket2.add(body0);
+    rocket2.add(body1);
+    rocket2.add(roll1);
+    rocket2.add(body2);
+    rocket2.add(roll2);
+    rocket2.add(body3);
+    rocket2.add(roll3);
+    rocket2.add(body4);
+}
+
 const createLaunch = () => {
 
     const launchColorTexture = textureLoader.load('/textures/launchpad/launch1/Wall_BaseColor.jpg');
@@ -310,6 +471,42 @@ const createLaunch = () => {
     base1.position.y = 1.5;
 
 }
+
+const createLaunch1 = () => {
+
+    const launchColorTexture = textureLoader.load('/textures/launchpad/launch1/Wall_BaseColor.jpg');
+    const launchHeightTexture = textureLoader.load('/textures/launchpad/launch1/Wall_Height.png');
+    const launchNormalTexture = textureLoader.load('/textures/launchpad/launch1/Wall_Normal.jpg');
+    const launchRoughnessTexture = textureLoader.load('/textures/launchpad/launch1/Wall_Roughness.jpg');
+    const launchMetrialTexture = textureLoader.load('/textures/launchpad/launch1/Wall_metrial.jpg');
+    // Group
+    const lunch = new THREE.Group()
+    scene.add(lunch);
+
+    const base = new THREE.Mesh(new THREE.BoxBufferGeometry(9, 6, 9.5),
+        new THREE.MeshStandardMaterial({
+            map: launchColorTexture,
+            normalMap: launchNormalTexture,
+            metalnessMap: launchMetrialTexture,
+            metalness: 0.1,
+            displacementMap: launchHeightTexture,
+            displacementScale: 0.002,
+            roughnessMap: launchRoughnessTexture,
+            roughness: 32
+        }));
+
+    const base1 = new THREE.Mesh(new THREE.PlaneBufferGeometry(2, 1, 4),
+        new THREE.MeshBasicMaterial({ color: 0xD6D6D6 }));
+
+    lunch.add(base);
+    lunch.add(base1);
+
+    base.position.y = 3;
+    base1.position.z = 2.8;
+    base1.position.y = 1.5;
+
+}
+
 
 /**
  * Sizes
