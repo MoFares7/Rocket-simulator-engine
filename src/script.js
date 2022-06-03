@@ -3,6 +3,7 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'dat.gui'
 import { TWEEN } from 'three/examples/jsm/libs/tween.module.min'
+import { Material } from 'three'
 
 /**
  * Base
@@ -23,6 +24,28 @@ function init() {
 
 }
 const scene = new THREE.Scene()
+
+// custom shapes To Wings around Rocket
+let geoFinShape = new THREE.Shape();
+let x = 0,
+    y = 0;
+
+geoFinShape.moveTo(x, y);
+geoFinShape.lineTo(x, y + 50);
+geoFinShape.lineTo(x + 35, y + 10);
+geoFinShape.lineTo(x + 35, y - 10);
+geoFinShape.lineTo(x, y);
+
+let finExtrudeSettings = {
+    //the amount is width wings
+    amount: 8,
+    bevelEnabled: true,
+    bevelSegments: 2,
+    steps: 2,
+    bevelSize: 1,
+    //the bevelThickness is height wings in width
+    bevelThickness: 1,
+};
 
 /**
  * Textures
@@ -300,6 +323,34 @@ const createRocket2 = () => {
     const rocket2 = new THREE.Group()
     scene.add(rocket2);
 
+    /*
+        let scale = 1.8;
+        let matRoof3 = new THREE.MeshPhongMaterial({
+            color: Colors.red3,
+            flatShading: true
+        });
+        let mFinLeft = new THREE.Mesh(geoFin, matRoof3);
+        mFinLeft.position.y = 9;
+        // mFinLeft.position.z = -zPlacement;
+        mFinLeft.rotation.y = 1.6 - 0.08;
+        mFinLeft.scale.set(scale, scale, scale);
+        mFinLeft.castShadow = true;
+        mFinLeft.receiveShadow = true;
+        let mFinRight = new THREE.Mesh(geoFin, matRoof3);
+        mFinRight.position.y = 9;
+        //   mFinRight.position.z = zPlacement;
+        mFinRight.rotation.y = -1.5;
+        mFinRight.scale.set(scale, scale, scale);
+        mFinRight.castShadow = true;
+        mFinRight.receiveShadow = true;
+
+        let mfins = new THREE.Object3D();
+        mfins.rotation.y += 0.05;
+        // mfins.add(mFinLeft, mFinRight);
+
+        let geoFin = new THREE.ExtrudeGeometry(geoFinShape, finExtrudeSettings);
+    */
+
     const body0 = new THREE.Mesh(
         new THREE.CylinderGeometry(1, 1, 1, 50),
         new THREE.MeshStandardMaterial({
@@ -336,7 +387,7 @@ const createRocket2 = () => {
             map: rollColorTexture,
             normalMap: rollNormalTexture,
             metalnessMap: rollMetrialTexture,
-            metalness: 0.1,
+            metalness: 1.1,
             aoMap: rollAmbientTexture,
 
             roughnessMap: rollroughnessTexture,
@@ -376,7 +427,7 @@ const createRocket2 = () => {
         }));
 
     const body3 = new THREE.Mesh(
-        new THREE.CylinderGeometry(1.2, 1.5, 2, 50),
+        new THREE.CylinderGeometry(1.1, 1.5, 1.2, 50),
         new THREE.MeshStandardMaterial({
             map: rocket2ColorTexture,
             normalMap: rocket2NormalTexture,
@@ -388,23 +439,57 @@ const createRocket2 = () => {
         }));
 
     const roll3 = new THREE.Mesh(
-        new THREE.CylinderGeometry(1.1, 1.2, 0.5, 50),
+        new THREE.CylinderGeometry(0.9, 1.17, 0.5, 50),
         new THREE.MeshStandardMaterial({
             map: rollColorTexture,
             normalMap: rollNormalTexture,
             metalnessMap: rollMetrialTexture,
             metalness: 0.1,
             aoMap: rollAmbientTexture,
-
             roughnessMap: rollroughnessTexture,
             roughness: 32,
-
-
         }));
 
 
     const body4 = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.1, 1.1, 1, 50),
+        new THREE.CylinderGeometry(0.4, 0.9, 0.7, 50),
+        new THREE.MeshStandardMaterial({
+            map: rocket2ColorTexture,
+            normalMap: rocket2NormalTexture,
+            metalnessMap: rocket2MetrialTexture,
+            metalness: 0.1,
+            aoMap: rocket2AmbientTexture,
+
+            roughnessMap: rocket2roughnessTexture,
+            roughness: 32,
+        }));
+    const header = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.01, 0.5, 0.6, 50),
+        new THREE.MeshStandardMaterial({
+            map: rocket2ColorTexture,
+            normalMap: rocket2NormalTexture,
+            metalnessMap: rocket2MetrialTexture,
+            metalness: 0.1,
+            aoMap: rocket2AmbientTexture,
+
+            roughnessMap: rocket2roughnessTexture,
+            roughness: 32,
+        }));
+
+    const mFinLeft = new THREE.Mesh(
+        new THREE.BoxGeometry(1, 3.8, 0.3),
+        new THREE.MeshStandardMaterial({
+            map: rocket2ColorTexture,
+            normalMap: rocket2NormalTexture,
+            metalnessMap: rocket2MetrialTexture,
+            metalness: 0.1,
+            aoMap: rocket2AmbientTexture,
+
+            roughnessMap: rocket2roughnessTexture,
+            roughness: 32,
+        }));
+    const mFinRight = new THREE.Mesh(
+        new THREE.BoxGeometry(1, 4, 0.3),
         new THREE.MeshStandardMaterial({
             map: rocket2ColorTexture,
             normalMap: rocket2NormalTexture,
@@ -417,14 +502,24 @@ const createRocket2 = () => {
         }));
 
 
+
+
     body0.position.y = 2.5;
     body1.position.y = 5;
     roll1.position.y = 7.76;
     body2.position.y = 9.5;
     roll2.position.y = 11.2;
-    body3.position.y = 12.3;
-    roll3.position.y = 13.4;
-    body4.position.y = 14.1;
+    body3.position.y = 12;
+    roll3.position.y = 12.7;
+    body4.position.y = 13.3;
+    header.position.y = 13.8;
+    mFinLeft.position.set(0, 5, 2);
+    mFinLeft.rotateX(90);
+    mFinLeft.rotateY(11);
+    mFinRight.position.set(0, 5, -2);
+    mFinRight.rotateX(180);
+    mFinRight.rotateY(11);
+    //mFinLeft.rotateZ(40);
     rocket2.position.y = 4;
 
     rocket2.add(body0);
@@ -435,6 +530,9 @@ const createRocket2 = () => {
     rocket2.add(body3);
     rocket2.add(roll3);
     rocket2.add(body4);
+    rocket2.add(header);
+    rocket2.add(mFinLeft);
+    rocket2.add(mFinRight);
 }
 
 const createLaunch = () => {
