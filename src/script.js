@@ -24,7 +24,7 @@ parameters.outsideColor = '#1b3984'
 let geometry = null
 let material = null
 let points = null
-
+let up = 4;
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
 window.addEventListener("load", init, false);
@@ -496,7 +496,7 @@ const createRocket2 = () => {
     engineLeft.position.set(0, 4.5, 3);
     rocket2.position.y = 4;
     engineRight.position.set(0, 4.5, -3);
-    rocket2.position.y = 4;
+    rocket2.position.y = up;
 
     rocket2.add(baseRocket);
     rocket2.add(body1);
@@ -511,6 +511,18 @@ const createRocket2 = () => {
     rocket2.add(mFinRight);
     rocket2.add(engineLeft);
     rocket2.add(engineRight);
+
+    window.addEventListener('keypress', (event) => {
+        switch (event.key) {
+            case 'w':
+                rocket2.position.y++;
+                break;
+            case 's':
+                rocket2.position.y--;
+                break;
+
+        }
+    })
 }
 
 const createLaunch = () => {
@@ -703,15 +715,7 @@ scene.add(camera)
 const controls = new OrbitControls(camera, canvas)
 controls.enableDamping = true
 
-document.onkeydown = function(e) {
-    if (e.keyCode === 37) {
-        rocket.position.y -= 1;
-    }
-    if (e.keyCode === 38) {
-        rocket.position.y += 1;
-    }
 
-}
 
 /**
  * Renderer
@@ -728,16 +732,17 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 const clock = new THREE.Clock()
 
 function animate() {
+
     requestAnimationFrame(animate);
     TWEEN.update();
     renderer.render(scene, camera);
+
 }
 animate();
 
+
 const tick = () => {
     const elapsedTime = clock.getElapsedTime()
-
-
 
     // Update controls
     controls.update()
@@ -747,6 +752,8 @@ const tick = () => {
 
     // Call tick again on the next frame
     window.requestAnimationFrame(tick)
+
+
 }
 
 tick()
