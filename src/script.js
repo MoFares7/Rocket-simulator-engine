@@ -323,46 +323,17 @@ const createRocket2 = () => {
     const rocket2 = new THREE.Group()
     scene.add(rocket2);
 
-    /*
-        let scale = 1.8;
-        let matRoof3 = new THREE.MeshPhongMaterial({
-            color: Colors.red3,
-            flatShading: true
-        });
-        let mFinLeft = new THREE.Mesh(geoFin, matRoof3);
-        mFinLeft.position.y = 9;
-        // mFinLeft.position.z = -zPlacement;
-        mFinLeft.rotation.y = 1.6 - 0.08;
-        mFinLeft.scale.set(scale, scale, scale);
-        mFinLeft.castShadow = true;
-        mFinLeft.receiveShadow = true;
-        let mFinRight = new THREE.Mesh(geoFin, matRoof3);
-        mFinRight.position.y = 9;
-        //   mFinRight.position.z = zPlacement;
-        mFinRight.rotation.y = -1.5;
-        mFinRight.scale.set(scale, scale, scale);
-        mFinRight.castShadow = true;
-        mFinRight.receiveShadow = true;
 
-        let mfins = new THREE.Object3D();
-        mfins.rotation.y += 0.05;
-        // mfins.add(mFinLeft, mFinRight);
-
-        let geoFin = new THREE.ExtrudeGeometry(geoFinShape, finExtrudeSettings);
-    */
-
-    const body0 = new THREE.Mesh(
-        new THREE.CylinderGeometry(1, 1, 1, 50),
+    const baseRocket = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.7, 1.2, 1, 50),
         new THREE.MeshStandardMaterial({
-            map: rocket2ColorTexture,
-            normalMap: rocket2NormalTexture,
-            metalnessMap: rocket2MetrialTexture,
-            metalness: 0.1,
-            aoMap: rocket2AmbientTexture,
-
-            roughnessMap: rocket2roughnessTexture,
+            map: rollColorTexture,
+            normalMap: rollNormalTexture,
+            metalnessMap: rollMetrialTexture,
+            metalness: 1.1,
+            aoMap: rollAmbientTexture,
+            roughnessMap: rollroughnessTexture,
             roughness: 32,
-
 
         }));
 
@@ -374,10 +345,8 @@ const createRocket2 = () => {
             metalnessMap: rocket2MetrialTexture,
             metalness: 0.1,
             aoMap: rocket2AmbientTexture,
-
             roughnessMap: rocket2roughnessTexture,
             roughness: 32,
-
 
         }));
 
@@ -389,10 +358,8 @@ const createRocket2 = () => {
             metalnessMap: rollMetrialTexture,
             metalness: 1.1,
             aoMap: rollAmbientTexture,
-
             roughnessMap: rollroughnessTexture,
             roughness: 32,
-
 
         }));
 
@@ -404,10 +371,8 @@ const createRocket2 = () => {
             metalnessMap: rocket2MetrialTexture,
             metalness: 0.1,
             aoMap: rocket2AmbientTexture,
-
             roughnessMap: rocket2roughnessTexture,
             roughness: 32,
-
 
         }));
 
@@ -419,7 +384,6 @@ const createRocket2 = () => {
             metalnessMap: rollMetrialTexture,
             metalness: 0.1,
             aoMap: rollAmbientTexture,
-
             roughnessMap: rollroughnessTexture,
             roughness: 32,
 
@@ -459,7 +423,6 @@ const createRocket2 = () => {
             metalnessMap: rocket2MetrialTexture,
             metalness: 0.1,
             aoMap: rocket2AmbientTexture,
-
             roughnessMap: rocket2roughnessTexture,
             roughness: 32,
         }));
@@ -471,40 +434,57 @@ const createRocket2 = () => {
             metalnessMap: rocket2MetrialTexture,
             metalness: 0.1,
             aoMap: rocket2AmbientTexture,
-
             roughnessMap: rocket2roughnessTexture,
             roughness: 32,
         }));
 
     const mFinLeft = new THREE.Mesh(
-        new THREE.BoxGeometry(1, 3.8, 0.3),
+        new THREE.BoxGeometry(1, 2.5, 0.3),
         new THREE.MeshStandardMaterial({
             map: rocket2ColorTexture,
             normalMap: rocket2NormalTexture,
             metalnessMap: rocket2MetrialTexture,
             metalness: 0.1,
             aoMap: rocket2AmbientTexture,
-
             roughnessMap: rocket2roughnessTexture,
             roughness: 32,
         }));
     const mFinRight = new THREE.Mesh(
-        new THREE.BoxGeometry(1, 4, 0.3),
+        new THREE.BoxGeometry(1, 2.7, 0.3),
         new THREE.MeshStandardMaterial({
             map: rocket2ColorTexture,
             normalMap: rocket2NormalTexture,
             metalnessMap: rocket2MetrialTexture,
             metalness: 0.1,
             aoMap: rocket2AmbientTexture,
-
+            roughnessMap: rocket2roughnessTexture,
+            roughness: 32,
+        }));
+    const engineRight = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.4, 0.6, 2, 50),
+        new THREE.MeshStandardMaterial({
+            map: rocket2ColorTexture,
+            normalMap: rocket2NormalTexture,
+            metalnessMap: rocket2MetrialTexture,
+            metalness: 0.1,
+            aoMap: rocket2AmbientTexture,
+            roughnessMap: rocket2roughnessTexture,
+            roughness: 32,
+        }));
+    const engineLeft = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.4, 0.6, 2, 50),
+        new THREE.MeshStandardMaterial({
+            map: rocket2ColorTexture,
+            normalMap: rocket2NormalTexture,
+            metalnessMap: rocket2MetrialTexture,
+            metalness: 0.1,
+            aoMap: rocket2AmbientTexture,
             roughnessMap: rocket2roughnessTexture,
             roughness: 32,
         }));
 
 
-
-
-    body0.position.y = 2.5;
+    baseRocket.position.y = 2.5;
     body1.position.y = 5;
     roll1.position.y = 7.76;
     body2.position.y = 9.5;
@@ -519,10 +499,12 @@ const createRocket2 = () => {
     mFinRight.position.set(0, 5, -2);
     mFinRight.rotateX(180);
     mFinRight.rotateY(11);
-    //mFinLeft.rotateZ(40);
+    engineLeft.position.set(0, 4.5, 3);
+    rocket2.position.y = 4;
+    engineRight.position.set(0, 4.5, -3);
     rocket2.position.y = 4;
 
-    rocket2.add(body0);
+    rocket2.add(baseRocket);
     rocket2.add(body1);
     rocket2.add(roll1);
     rocket2.add(body2);
@@ -533,6 +515,8 @@ const createRocket2 = () => {
     rocket2.add(header);
     rocket2.add(mFinLeft);
     rocket2.add(mFinRight);
+    rocket2.add(engineLeft);
+    rocket2.add(engineRight);
 }
 
 const createLaunch = () => {
