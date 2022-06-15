@@ -3,7 +3,6 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'dat.gui'
 import { TWEEN } from 'three/examples/jsm/libs/tween.module.min'
-import './GLTFLoader'
 
 /**
  * Base
@@ -35,21 +34,15 @@ function init() {
     createScene();
     createLights();
     //  createmo();
-    //createRocket1();
-    //createRocket2();
-    CreateRocket3();
+    createRocket1();
+    //  createRocket2();
+    //  CreateRocket3();
     createLaunch();
     generateGalaxy();
 
 }
 const scene = new THREE.Scene()
 
-const loader = new THREE.ObjectLoader()
-loader.load('/model/scene.gltf', function(gltf) {
-    gltf.scene.position.set(3, 3, 3.025)
-    scene.add(gltf.scene);
-    //  renderer.render(scene, camera);
-});
 /**
  * Textures
  */
@@ -58,48 +51,38 @@ const textureLoader = new THREE.TextureLoader()
 // Scene
 const createScene = () => {
 
-    const bgTexture = textureLoader.load('/textures/background/images1.jpg');
+
     const grassColorTexture = textureLoader.load('/textures/grass/color.jpg')
     const grassAmbientOcclusionTexture = textureLoader.load('/textures/grass/ambientOcclusion.jpg')
     const grassNormalTexture = textureLoader.load('/textures/grass/normal.jpg')
     const grassRoughnessTexture = textureLoader.load('/textures/grass/roughness.jpg')
 
-    //  scene.background = bgTexture;
-    /**
-     * Darw Grass
-     */
-    grassColorTexture.repeat.set(8, 8)
-    grassAmbientOcclusionTexture.repeat.set(8, 8)
-    grassNormalTexture.repeat.set(8, 8)
-    grassRoughnessTexture.repeat.set(8, 8)
 
-    grassColorTexture.wrapS = THREE.RepeatWrapping
-    grassAmbientOcclusionTexture.wrapS = THREE.RepeatWrapping
-    grassNormalTexture.wrapS = THREE.RepeatWrapping
-    grassRoughnessTexture.wrapS = THREE.RepeatWrapping
+    // TEXTURE TO ENVIRONMENT
 
-    grassColorTexture.wrapT = THREE.RepeatWrapping
-    grassAmbientOcclusionTexture.wrapT = THREE.RepeatWrapping
-    grassNormalTexture.wrapT = THREE.RepeatWrapping
-    grassRoughnessTexture.wrapT = THREE.RepeatWrapping
+    let materialArray = [];
+    const environmet1Texture = textureLoader.load('/textures/environment/meadow_ft.jpg')
+    const environmet2Texture = textureLoader.load('/textures/environment/meadow_bk.jpg')
+    const environmet3Texture = textureLoader.load('/textures/environment/meadow_up.jpg')
+    const environmet4Texture = textureLoader.load('/textures/environment/meadow_dn.jpg')
+    const environmet5Texture = textureLoader.load('/textures/environment/meadow_rt.jpg')
+    const environmet6Texture = textureLoader.load('/textures/environment/meadow_lf.jpg')
 
-    // floor
-    const floor = new THREE.Mesh(
-            new THREE.PlaneBufferGeometry(60, 60),
-            new THREE.MeshStandardMaterial({
-                map: grassColorTexture,
-                aoMap: grassAmbientOcclusionTexture,
-                normalMap: grassNormalTexture,
-                roughnessMap: grassRoughnessTexture
-            })
-        )
-        // plane.receiveShadow = true
-    floor.geometry.setAttribute('uv2', new THREE.Float32BufferAttribute(floor.geometry.attributes.uv.array, 2))
-    floor.rotation.x = -Math.PI * 0.5
-    floor.position.y = -0.3
+    materialArray.push(new THREE.MeshBasicMaterial({ map: environmet1Texture }));
+    materialArray.push(new THREE.MeshBasicMaterial({ map: environmet2Texture }));
+    materialArray.push(new THREE.MeshBasicMaterial({ map: environmet3Texture }));
+    materialArray.push(new THREE.MeshBasicMaterial({ map: environmet4Texture }));
+    materialArray.push(new THREE.MeshBasicMaterial({ map: environmet5Texture }));
+    materialArray.push(new THREE.MeshBasicMaterial({ map: environmet6Texture }));
 
+    for (let i = 0; i < 6; i++)
+        materialArray[i].side = THREE.BackSide;
+    let skyboxGeo = new THREE.BoxGeometry(1000, 500, 500);
+    let skybox = new THREE.Mesh(skyboxGeo, materialArray);
+    skybox.position.y = 247;
 
-    scene.add(floor)
+    scene.add(skybox);
+
 
 }
 
@@ -283,17 +266,17 @@ const createRocket1 = () => {
     rocket.add(headRocket);
 
 
-    launchCylinder1.position.y = -1.2;
-    launchCylinder2.position.y = -1;
-    bodyCylinder1.position.y = 1.7;
-    rollCylinder1.position.y = 4.7;
-    bodyCylinder2.position.y = 7.2;
-    rollCylinder2.position.y = 9.7;
-    bodyCylinder3.position.y = 12.25;
-    rollCylinder3.position.y = 14.7;
-    headRocket.position.y = 15.2;
+    launchCylinder1.position.y = 2.3;
+    launchCylinder2.position.y = 2.5;
+    bodyCylinder1.position.y = 5;
+    rollCylinder1.position.y = 8;
+    bodyCylinder2.position.y = 10.5;
+    rollCylinder2.position.y = 12.7;
+    bodyCylinder3.position.y = 15.25;
+    rollCylinder3.position.y = 17.7;
+    headRocket.position.y = 18.2;
 
-    rocket.position.y = 6.2;
+    rocket.position.y = 0;
 
 
     window.addEventListener('keypress', (event) => {
@@ -313,17 +296,12 @@ const createRocket2 = () => {
 
     const rocket2MetrialTexture = textureLoader.load('static/textures/rocket/bodyRocket2/Material.jpg');
     const rocket2ColorTexture = textureLoader.load('/textures/rocket/bodyRocket2/Plastic_basecolor.jpg');
-
     const rocket2AmbientTexture = textureLoader.load('/textures/rocket/bodyRocket2/Plastic_ambientOcclusion.jpg');
-    const rocket2EmissiveTexture = textureLoader.load('/textures/rocket/bodyRocket2/emissive.jpg');
-    const rocket2HeightTexture = textureLoader.load('/textures/rocket/bodyRocket2/Plastic_height.png');
     const rocket2NormalTexture = textureLoader.load('/textures/rocket/bodyRocket2/Plastic_normal.jpg');
     const rocket2roughnessTexture = textureLoader.load('/textures/rocket/bodyRocket2/Plastic_roughness.jpg');
-
     const rollMetrialTexture = textureLoader.load('static/textures/rocket/bodyRocket2/Material_roll.jpg');
     const rollColorTexture = textureLoader.load('/textures/rocket/bodyRocket2/Metal_basecolor.jpg');
     const rollAmbientTexture = textureLoader.load('/textures/rocket/bodyRocket2/Metal_ambientOcclusion.jpg');
-    const rollHeightTexture = textureLoader.load('/textures/rocket/bodyRocket2/Metal_height.png');
     const rollNormalTexture = textureLoader.load('/textures/rocket/bodyRocket2/Metal_normal.jpg');
     const rollroughnessTexture = textureLoader.load('/textures/rocket/bodyRocket2/Metal_roughness.jpg');
     const rocket2 = new THREE.Group()
@@ -523,7 +501,7 @@ const createRocket2 = () => {
     rocket2.add(mFinRight);
     rocket2.add(engineLeft);
     rocket2.add(engineRight);
-
+    rocket2.position.y = 0;
     window.addEventListener('keypress', (event) => {
         switch (event.key) {
             case 'w':
@@ -710,6 +688,7 @@ const CreateRocket3 = () => {
 
 
 }
+
 const createLaunch = () => {
 
     const launchColorTexture = textureLoader.load('/textures/launchpad/launch2/Wall_basecolor.jpg');
@@ -733,15 +712,10 @@ const createLaunch = () => {
             roughness: 32
         }));
 
-    const base1 = new THREE.Mesh(new THREE.PlaneBufferGeometry(2, 1, 4),
-        new THREE.MeshBasicMaterial({ color: 0xD6D6D6 }));
 
     lunch.add(base);
-    lunch.add(base1);
 
-    base.position.y = 2.3;
-    base1.position.z = 2.8;
-    base1.position.y = 2.5;
+    base.position.y = -0.5;
 
 }
 
@@ -851,15 +825,6 @@ const generateGalaxy = () => {
     scene.add(points)
 }
 
-const createmo = () => {
-    let mixer = null
-
-    // Animation
-    mixer = new THREE.AnimationMixer(gltf.scene)
-    const action = mixer.clipAction(gltf.animations[2])
-    action.play();
-}
-
 
 
 
@@ -902,7 +867,7 @@ window.addEventListener('resize', init => {
  * Camera
  */
 // Base camera
-const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
+const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 10000)
 camera.position.x = 12
 camera.position.y = 4
 camera.position.z = 0
@@ -927,20 +892,11 @@ renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
     //renderer.setClearColor('#262837')
 
-const clock = new THREE.Clock()
 
-function animate() {
-
-    requestAnimationFrame(animate);
-    TWEEN.update();
-    renderer.render(scene, camera);
-
-}
-animate();
 
 
 const tick = () => {
-    const elapsedTime = clock.getElapsedTime()
+
 
     // Update controls
     controls.update()
