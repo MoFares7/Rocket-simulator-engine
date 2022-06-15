@@ -61,6 +61,7 @@ const createScene = () => {
     // TEXTURE TO ENVIRONMENT
 
     let materialArray = [];
+    let materialArray1 = [];
     const environmet1Texture = textureLoader.load('/textures/environment/meadow_ft.jpg')
     const environmet2Texture = textureLoader.load('/textures/environment/meadow_bk.jpg')
     const environmet3Texture = textureLoader.load('/textures/environment/meadow_up.jpg')
@@ -75,13 +76,31 @@ const createScene = () => {
     materialArray.push(new THREE.MeshBasicMaterial({ map: environmet5Texture }));
     materialArray.push(new THREE.MeshBasicMaterial({ map: environmet6Texture }));
 
+    materialArray1.push(new THREE.MeshBasicMaterial({ map: environmet3Texture }));
+    materialArray1.push(new THREE.MeshBasicMaterial({ map: environmet3Texture }));
+    materialArray1.push(new THREE.MeshBasicMaterial({ map: environmet3Texture }));
+    materialArray1.push(new THREE.MeshBasicMaterial({ map: environmet3Texture }));
+    materialArray1.push(new THREE.MeshBasicMaterial({ map: environmet3Texture }));
+    materialArray1.push(new THREE.MeshBasicMaterial({ map: environmet3Texture }));
+
     for (let i = 0; i < 6; i++)
         materialArray[i].side = THREE.BackSide;
-    let skyboxGeo = new THREE.BoxGeometry(1000, 500, 500);
+
+    let skyboxGeo = new THREE.BoxGeometry(820, 120, 850);
     let skybox = new THREE.Mesh(skyboxGeo, materialArray);
-    skybox.position.y = 247;
+    skybox.position.y = 57;
+
+
+
+    for (let i = 0; i < 6; i++)
+        materialArray1[i].side = THREE.BackSide;
+    let outskyboxGeo = new THREE.SphereGeometry(820, 920, 150);
+    let skybox1 = new THREE.Mesh(outskyboxGeo, materialArray1);
+    skybox1.position.y = 247;
+
 
     scene.add(skybox);
+    scene.add(skybox1);
 
 
 }
