@@ -34,8 +34,8 @@ function init() {
     createScene();
     createLights();
     //  createmo();
-    createRocket1();
-    //  createRocket2();
+    // createRocket1();
+    createRocket2();
     //  CreateRocket3();
     createLaunch();
     generateGalaxy();
@@ -50,12 +50,6 @@ const textureLoader = new THREE.TextureLoader()
 
 // Scene
 const createScene = () => {
-
-
-    const grassColorTexture = textureLoader.load('/textures/grass/color.jpg')
-    const grassAmbientOcclusionTexture = textureLoader.load('/textures/grass/ambientOcclusion.jpg')
-    const grassNormalTexture = textureLoader.load('/textures/grass/normal.jpg')
-    const grassRoughnessTexture = textureLoader.load('/textures/grass/roughness.jpg')
 
 
     // TEXTURE TO ENVIRONMENT
@@ -94,7 +88,7 @@ const createScene = () => {
 
     for (let i = 0; i < 6; i++)
         materialArray1[i].side = THREE.BackSide;
-    let outskyboxGeo = new THREE.SphereGeometry(820, 920, 150);
+    let outskyboxGeo = new THREE.SphereGeometry(820, 420, 150);
     let skybox1 = new THREE.Mesh(outskyboxGeo, materialArray1);
     skybox1.position.y = 247;
 
