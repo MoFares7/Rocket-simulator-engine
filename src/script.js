@@ -10,21 +10,12 @@ import { TWEEN } from 'three/examples/jsm/libs/tween.module.min'
 // Debug
 
 const gui = new dat.GUI()
-const parameters = {}
-parameters.count = 100000
-parameters.size = 0.01
-parameters.radius = 17
-parameters.branches = 3
-parameters.spin = 10
-parameters.randomness = 2.2
-parameters.randomnessPower = 3
-parameters.insideColor = '#ff6030'
-parameters.outsideColor = '#1b3984'
 
 let geometry = null
 let material = null
 let points = null
 let up = 4;
+let radius = 1.5;
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
@@ -33,12 +24,11 @@ window.addEventListener("load", init, false);
 function init() {
     createScene();
     createLights();
-    //  createmo();
     // createRocket1();
     createRocket2();
     //  CreateRocket3();
     createLaunch();
-    generateGalaxy();
+    //  generateGalaxy();
 
 }
 const scene = new THREE.Scene()
@@ -56,12 +46,17 @@ const createScene = () => {
 
     let materialArray = [];
     let materialArray1 = [];
+    let materialArray2 = [];
     const environmet1Texture = textureLoader.load('/textures/environment/meadow_ft.jpg')
     const environmet2Texture = textureLoader.load('/textures/environment/meadow_bk.jpg')
     const environmet3Texture = textureLoader.load('/textures/environment/meadow_up.jpg')
     const environmet4Texture = textureLoader.load('/textures/environment/meadow_dn.jpg')
     const environmet5Texture = textureLoader.load('/textures/environment/meadow_rt.jpg')
     const environmet6Texture = textureLoader.load('/textures/environment/meadow_lf.jpg')
+    const earthTexture = textureLoader.load('/textures/environment/earth.jpg')
+    const earthTexture1 = textureLoader.load('/textures/environment/earthbump.jpg')
+    const earthTexture2 = textureLoader.load('/textures/environment/earthCloud.jpg')
+    const earthTexture3 = textureLoader.load('/textures/environment/specularmap.jpg')
 
     materialArray.push(new THREE.MeshBasicMaterial({ map: environmet1Texture }));
     materialArray.push(new THREE.MeshBasicMaterial({ map: environmet2Texture }));
@@ -77,9 +72,9 @@ const createScene = () => {
     materialArray1.push(new THREE.MeshBasicMaterial({ map: environmet3Texture }));
     materialArray1.push(new THREE.MeshBasicMaterial({ map: environmet3Texture }));
 
+
     for (let i = 0; i < 6; i++)
         materialArray[i].side = THREE.BackSide;
-
     let skyboxGeo = new THREE.BoxGeometry(820, 120, 850);
     let skybox = new THREE.Mesh(skyboxGeo, materialArray);
     skybox.position.y = 57;
@@ -92,9 +87,22 @@ const createScene = () => {
     let skybox1 = new THREE.Mesh(outskyboxGeo, materialArray1);
     skybox1.position.y = 247;
 
+    // earth geometry
+    const earthGeometry = new THREE.Mesh(
+        new THREE.SphereGeometry(820, 900, 900),
+        new THREE.MeshStandardMaterial({
+            roughness: 1,
+            metalness: 0,
+            map: earthTexture,
+            bumpMap: earthTexture,
+            bumpScale: 0.3
+        }));
+    earthGeometry.position.y = 250;
+
 
     scene.add(skybox);
     scene.add(skybox1);
+    scene.add(earthGeometry);
 
 
 }
@@ -176,7 +184,7 @@ const createRocket1 = () => {
     const bodyrocket = new THREE.Group()
     scene.add(bodyrocket);
 
-    const bodyCylinder1 = new THREE.Mesh(new THREE.CylinderBufferGeometry(1.5, 1.5, 5, 50),
+    const bodyCylinder1 = new THREE.Mesh(new THREE.CylinderBufferGeometry(radius, radius, 5, 50),
         new THREE.MeshStandardMaterial({
             map: rocket1ColorTexture,
             aoMap: rocket1AmbientTexture,
@@ -190,7 +198,7 @@ const createRocket1 = () => {
             emissive: rocket1EmissiveTexture,
         }));
 
-    const rollCylinder1 = new THREE.Mesh(new THREE.CylinderBufferGeometry(1.5, 1.5, 1, 50),
+    const rollCylinder1 = new THREE.Mesh(new THREE.CylinderBufferGeometry(radius, radius, 1, 50),
         new THREE.MeshStandardMaterial({
             map: celingBaseColorTexture,
             metalnessMap: celingMaterialTexture,
@@ -200,7 +208,7 @@ const createRocket1 = () => {
             emissive: celingEmissiveTexture,
 
         }));
-    const bodyCylinder2 = new THREE.Mesh(new THREE.CylinderBufferGeometry(1.5, 1.5, 4, 50),
+    const bodyCylinder2 = new THREE.Mesh(new THREE.CylinderBufferGeometry(radius, radius, 4, 50),
         new THREE.MeshStandardMaterial({
             map: rocket1ColorTexture,
             normalMap: rocket1NormalTexture,
@@ -214,7 +222,7 @@ const createRocket1 = () => {
 
         }));
 
-    const rollCylinder2 = new THREE.Mesh(new THREE.CylinderBufferGeometry(1.5, 1.5, 1, 50),
+    const rollCylinder2 = new THREE.Mesh(new THREE.CylinderBufferGeometry(radius, radius, 1, 50),
         new THREE.MeshStandardMaterial({
             map: celingBaseColorTexture,
             metalnessMap: celingMaterialTexture,
@@ -227,7 +235,7 @@ const createRocket1 = () => {
 
         }));
 
-    const bodyCylinder3 = new THREE.Mesh(new THREE.CylinderBufferGeometry(1.5, 1.5, 4, 50),
+    const bodyCylinder3 = new THREE.Mesh(new THREE.CylinderBufferGeometry(radius, radius, 4, 50),
         new THREE.MeshStandardMaterial({
             map: rocket1ColorTexture,
             normalMap: rocket1NormalTexture,
@@ -241,7 +249,7 @@ const createRocket1 = () => {
 
         }));
 
-    const rollCylinder3 = new THREE.Mesh(new THREE.CylinderBufferGeometry(1.5, 1.5, 1, 50),
+    const rollCylinder3 = new THREE.Mesh(new THREE.CylinderBufferGeometry(radius, radius, 1, 50),
         new THREE.MeshStandardMaterial({
             map: celingBaseColorTexture,
             metalnessMap: celingMaterialTexture,
@@ -253,7 +261,7 @@ const createRocket1 = () => {
             emissive: celingEmissiveTexture,
         }));
 
-    const headRocket = new THREE.Mesh(new THREE.SphereGeometry(1.5, 20, 12),
+    const headRocket = new THREE.Mesh(new THREE.SphereGeometry(radius, 20, 12),
         new THREE.MeshStandardMaterial({
             map: rocket1ColorTexture,
             normalMap: rocket1NormalTexture,
@@ -322,7 +330,7 @@ const createRocket2 = () => {
 
 
     const baseColumn1 = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.7, 1.2, 1, 50),
+        new THREE.CylinderGeometry(radius - 0.9, radius - 0.3, 1, 50),
         new THREE.MeshStandardMaterial({
             map: rollColorTexture,
             normalMap: rollNormalTexture,
@@ -335,7 +343,7 @@ const createRocket2 = () => {
         }));
 
     const body1 = new THREE.Mesh(
-        new THREE.CylinderGeometry(1.5, 1.5, 5, 50),
+        new THREE.CylinderGeometry(radius, radius, 5, 50),
         new THREE.MeshStandardMaterial({
             map: rocket2ColorTexture,
             normalMap: rocket2NormalTexture,
@@ -348,7 +356,7 @@ const createRocket2 = () => {
         }));
 
     const roll1 = new THREE.Mesh(
-        new THREE.CylinderGeometry(1.5, 1.5, 0.5, 50),
+        new THREE.CylinderGeometry(radius, radius, 0.5, 50),
         new THREE.MeshStandardMaterial({
             map: rollColorTexture,
             normalMap: rollNormalTexture,
@@ -361,7 +369,7 @@ const createRocket2 = () => {
         }));
 
     const body2 = new THREE.Mesh(
-        new THREE.CylinderGeometry(1.5, 1.5, 3, 50),
+        new THREE.CylinderGeometry(radius, radius, 3, 50),
         new THREE.MeshStandardMaterial({
             map: rocket2ColorTexture,
             normalMap: rocket2NormalTexture,
@@ -374,7 +382,7 @@ const createRocket2 = () => {
         }));
 
     const roll2 = new THREE.Mesh(
-        new THREE.CylinderGeometry(1.5, 1.5, 0.5, 50),
+        new THREE.CylinderGeometry(radius, radius, 0.5, 50),
         new THREE.MeshStandardMaterial({
             map: rollColorTexture,
             normalMap: rollNormalTexture,
@@ -388,7 +396,7 @@ const createRocket2 = () => {
         }));
 
     const body3 = new THREE.Mesh(
-        new THREE.CylinderGeometry(1.1, 1.5, 1.2, 50),
+        new THREE.CylinderGeometry(radius - 0.4, radius, 1.2, 50),
         new THREE.MeshStandardMaterial({
             map: rocket2ColorTexture,
             normalMap: rocket2NormalTexture,
@@ -400,7 +408,7 @@ const createRocket2 = () => {
         }));
 
     const roll3 = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.9, 1.17, 0.5, 50),
+        new THREE.CylinderGeometry(radius - 0.6, radius - 0.33, 0.5, 50),
         new THREE.MeshStandardMaterial({
             map: rollColorTexture,
             normalMap: rollNormalTexture,
@@ -413,7 +421,7 @@ const createRocket2 = () => {
 
 
     const body4 = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.4, 0.9, 0.7, 50),
+        new THREE.CylinderGeometry(radius - 1.1, radius - 0.6, 0.7, 50),
         new THREE.MeshStandardMaterial({
             map: rocket2ColorTexture,
             normalMap: rocket2NormalTexture,
@@ -424,7 +432,7 @@ const createRocket2 = () => {
             roughness: 32,
         }));
     const header = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.01, 0.5, 0.6, 50),
+        new THREE.CylinderGeometry(0.01, radius - 1, 0.6, 50),
         new THREE.MeshStandardMaterial({
             map: rocket2ColorTexture,
             normalMap: rocket2NormalTexture,
@@ -458,7 +466,7 @@ const createRocket2 = () => {
             roughness: 32,
         }));
     const engineRight = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.4, 0.6, 2, 50),
+        new THREE.CylinderGeometry(radius - 1.1, radius - 0.9, 2, 50),
         new THREE.MeshStandardMaterial({
             map: rocket2ColorTexture,
             normalMap: rocket2NormalTexture,
@@ -469,7 +477,7 @@ const createRocket2 = () => {
             roughness: 32,
         }));
     const engineLeft = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.4, 0.6, 2, 50),
+        new THREE.CylinderGeometry(radius - 1.1, radius - 0.9, 2, 50),
         new THREE.MeshStandardMaterial({
             map: rocket2ColorTexture,
             normalMap: rocket2NormalTexture,
@@ -518,7 +526,7 @@ const createRocket2 = () => {
     window.addEventListener('keypress', (event) => {
         switch (event.key) {
             case 'w':
-                rocket2.position.y++;
+                rocket2.position.y += 3;
                 break;
             case 's':
                 rocket2.position.y--;
@@ -713,7 +721,7 @@ const createLaunch = () => {
     const lunch = new THREE.Group()
     scene.add(lunch);
 
-    const base = new THREE.Mesh(new THREE.BoxBufferGeometry(10, 5, 10),
+    const base = new THREE.Mesh(new THREE.BoxBufferGeometry(20, 5, 20),
         new THREE.MeshStandardMaterial({
             map: launchColorTexture,
             normalMap: launchNormalTexture,
@@ -729,6 +737,7 @@ const createLaunch = () => {
     lunch.add(base);
 
     base.position.y = -0.5;
+
 
 }
 
@@ -837,21 +846,6 @@ const generateGalaxy = () => {
     points.position.y = 33;
     scene.add(points)
 }
-
-
-
-
-gui.add(parameters, 'count').min(100).max(1000000).step(100).onFinishChange(generateGalaxy)
-gui.add(parameters, 'size').min(0.001).max(0.1).step(0.001).onFinishChange(generateGalaxy)
-gui.add(parameters, 'radius').min(0.01).max(20).step(0.01).onFinishChange(generateGalaxy)
-gui.add(parameters, 'branches').min(2).max(20).step(1).onFinishChange(generateGalaxy)
-gui.add(parameters, 'spin').min(-5).max(5).step(0.001).onFinishChange(generateGalaxy)
-gui.add(parameters, 'randomness').min(0).max(2).step(0.001).onFinishChange(generateGalaxy)
-gui.add(parameters, 'randomnessPower').min(1).max(10).step(0.001).onFinishChange(generateGalaxy)
-gui.addColor(parameters, 'insideColor').onFinishChange(generateGalaxy)
-gui.addColor(parameters, 'outsideColor').onFinishChange(generateGalaxy)
-
-generateGalaxy();
 
 
 /**
