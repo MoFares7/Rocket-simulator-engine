@@ -2,43 +2,44 @@ import './style.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'dat.gui'
-import { TWEEN } from 'three/examples/jsm/libs/tween.module.min'
+import Rocket from './Physics/rocket'
+import vector from "./Physics/vector";
+
+/**
+ * Debug
+ */
+const gui = new dat.GUI({ width: 400 })
+
+let up = 4;
+let radius = 1.5;
+let h = 5;
+const rocket1 = new THREE.Group()
+const rocket2 = new THREE.Group()
+let rotation = 0;
 
 /**
  * Base
  */
-// Debug
-
-const gui = new dat.GUI()
-
-let geometry = null
-let material = null
-let points = null
-let up = 4;
-let radius = 1.5;
-
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
-window.addEventListener("load", init, false);
+    // window.addEventListener("load", init, false);
 
-function init() {
-    createScene();
-    createLights();
-    // createRocket1();
-    createRocket2();
-    //  CreateRocket3();
-    createLaunch();
-    //  generateGalaxy();
-
-}
-const scene = new THREE.Scene()
-
-/**
- * Textures
- */
-const textureLoader = new THREE.TextureLoader()
 
 // Scene
+const scene = new THREE.Scene()
+const textureLoader = new THREE.TextureLoader()
+
+/**
+ * Lights
+ */
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.7)
+scene.add(ambientLight)
+
+const directionalLight = new THREE.DirectionalLight(0xFFFFFF, 0.1)
+directionalLight.position.set(5, 5, 3)
+scene.add(directionalLight)
+
+
 const createScene = () => {
 
 
@@ -46,7 +47,7 @@ const createScene = () => {
 
     let materialArray = [];
     let materialArray1 = [];
-    let materialArray2 = [];
+
     const environmet1Texture = textureLoader.load('/textures/environment/meadow_ft.jpg')
     const environmet2Texture = textureLoader.load('/textures/environment/meadow_bk.jpg')
     const environmet3Texture = textureLoader.load('/textures/environment/meadow_up.jpg')
@@ -54,9 +55,6 @@ const createScene = () => {
     const environmet5Texture = textureLoader.load('/textures/environment/meadow_rt.jpg')
     const environmet6Texture = textureLoader.load('/textures/environment/meadow_lf.jpg')
     const earthTexture = textureLoader.load('/textures/environment/earth.jpg')
-    const earthTexture1 = textureLoader.load('/textures/environment/earthbump.jpg')
-    const earthTexture2 = textureLoader.load('/textures/environment/earthCloud.jpg')
-    const earthTexture3 = textureLoader.load('/textures/environment/specularmap.jpg')
 
     materialArray.push(new THREE.MeshBasicMaterial({ map: environmet1Texture }));
     materialArray.push(new THREE.MeshBasicMaterial({ map: environmet2Texture }));
@@ -78,7 +76,6 @@ const createScene = () => {
     let skyboxGeo = new THREE.BoxGeometry(820, 120, 850);
     let skybox = new THREE.Mesh(skyboxGeo, materialArray);
     skybox.position.y = 57;
-
 
 
     for (let i = 0; i < 6; i++)
@@ -107,41 +104,6 @@ const createScene = () => {
 
 }
 
-const createLights = () => {
-    // Group
-    const light = new THREE.Group()
-    scene.add(light)
-
-
-
-    /**
-     * Lights
-     */
-    // Ambient light
-    const ambientLight = new THREE.AmbientLight('#b9d5ff', 0.3)
-    light.add(ambientLight)
-
-    // Directional light
-    const moonLight = new THREE.DirectionalLight('#b9d5ff', 0.12)
-    moonLight.castShadow = true
-    moonLight.shadow.mapSize.width = 256
-    moonLight.shadow.mapSize.height = 256
-    moonLight.shadow.camera.far = 15
-    moonLight.position.set(4, 5, -2)
-    light.add(moonLight)
-
-
-    const doorLight = new THREE.PointLight('#ff7d46', 1, 17)
-    doorLight.castShadow = true
-    doorLight.shadow.mapSize.width = 1256
-    doorLight.shadow.mapSize.height = 1256
-    doorLight.shadow.camera.far = 7
-
-    doorLight.position.set(4, 2.2, -0.7)
-    light.add(doorLight)
-
-
-}
 
 const createRocket1 = () => {
     const rocket1MetrialTexture = textureLoader.load('static/textures/rocket/bodyRocket1/Material.jpg');
@@ -161,20 +123,20 @@ const createRocket1 = () => {
     const celingMaterialTexture = textureLoader.load('static/textures/rocket/bodyRocket1/Ceiling_Material.png');
 
     // Group
-    const rocket = new THREE.Group()
-    scene.add(rocket)
+    const rocket1 = new THREE.Group()
+    rocket1.rotateY(Math.PI / 2)
+    scene.add(rocket1)
 
-    const launchCylinder1 = new THREE.Mesh(new THREE.CylinderBufferGeometry(1, 1, 0.2, 50),
+    const launchCylinder1 = new THREE.Mesh(new THREE.CylinderBufferGeometry(radius - 0.5, radius - 0.5, h - 4.8, 50),
         new THREE.MeshBasicMaterial({ color: 0xff0000 }));
 
-    const launchCylinder2 = new THREE.Mesh(new THREE.CylinderBufferGeometry(1.25, 1.25, 0.4, 50),
+    const launchCylinder2 = new THREE.Mesh(new THREE.CylinderBufferGeometry(radius - 0.25, radius - 0.25, 0.4, 50),
         new THREE.MeshStandardMaterial({
             map: rocket1ColorTexture,
             normalMap: rocket1NormalTexture,
             metalnessMap: rocket1MetrialTexture,
             metalness: 0.1,
             aoMap: rocket1AmbientTexture,
-
             roughnessMap: rocket1roughnessTexture,
             roughness: 32,
             opacity: rocket1opacityTexture,
@@ -184,10 +146,9 @@ const createRocket1 = () => {
     const bodyrocket = new THREE.Group()
     scene.add(bodyrocket);
 
-    const bodyCylinder1 = new THREE.Mesh(new THREE.CylinderBufferGeometry(radius, radius, 5, 50),
+    const bodyCylinder1 = new THREE.Mesh(new THREE.CylinderBufferGeometry(radius, radius, h, 50),
         new THREE.MeshStandardMaterial({
             map: rocket1ColorTexture,
-            aoMap: rocket1AmbientTexture,
             normalMap: rocket1NormalTexture,
             metalnessMap: rocket1MetrialTexture,
             metalness: 0.1,
@@ -198,7 +159,7 @@ const createRocket1 = () => {
             emissive: rocket1EmissiveTexture,
         }));
 
-    const rollCylinder1 = new THREE.Mesh(new THREE.CylinderBufferGeometry(radius, radius, 1, 50),
+    const rollCylinder1 = new THREE.Mesh(new THREE.CylinderBufferGeometry(radius, radius, h - 4, 50),
         new THREE.MeshStandardMaterial({
             map: celingBaseColorTexture,
             metalnessMap: celingMaterialTexture,
@@ -208,7 +169,7 @@ const createRocket1 = () => {
             emissive: celingEmissiveTexture,
 
         }));
-    const bodyCylinder2 = new THREE.Mesh(new THREE.CylinderBufferGeometry(radius, radius, 4, 50),
+    const bodyCylinder2 = new THREE.Mesh(new THREE.CylinderBufferGeometry(radius, radius, h - 1, 50),
         new THREE.MeshStandardMaterial({
             map: rocket1ColorTexture,
             normalMap: rocket1NormalTexture,
@@ -222,7 +183,7 @@ const createRocket1 = () => {
 
         }));
 
-    const rollCylinder2 = new THREE.Mesh(new THREE.CylinderBufferGeometry(radius, radius, 1, 50),
+    const rollCylinder2 = new THREE.Mesh(new THREE.CylinderBufferGeometry(radius, radius, h - 4, 50),
         new THREE.MeshStandardMaterial({
             map: celingBaseColorTexture,
             metalnessMap: celingMaterialTexture,
@@ -235,7 +196,7 @@ const createRocket1 = () => {
 
         }));
 
-    const bodyCylinder3 = new THREE.Mesh(new THREE.CylinderBufferGeometry(radius, radius, 4, 50),
+    const bodyCylinder3 = new THREE.Mesh(new THREE.CylinderBufferGeometry(radius, radius, h - 1, 50),
         new THREE.MeshStandardMaterial({
             map: rocket1ColorTexture,
             normalMap: rocket1NormalTexture,
@@ -249,7 +210,7 @@ const createRocket1 = () => {
 
         }));
 
-    const rollCylinder3 = new THREE.Mesh(new THREE.CylinderBufferGeometry(radius, radius, 1, 50),
+    const rollCylinder3 = new THREE.Mesh(new THREE.CylinderBufferGeometry(radius, radius, h - 4, 50),
         new THREE.MeshStandardMaterial({
             map: celingBaseColorTexture,
             metalnessMap: celingMaterialTexture,
@@ -261,7 +222,7 @@ const createRocket1 = () => {
             emissive: celingEmissiveTexture,
         }));
 
-    const headRocket = new THREE.Mesh(new THREE.SphereGeometry(radius, 20, 12),
+    const headRocket = new THREE.Mesh(new THREE.SphereGeometry(radius, h + 15, 12),
         new THREE.MeshStandardMaterial({
             map: rocket1ColorTexture,
             normalMap: rocket1NormalTexture,
@@ -276,15 +237,15 @@ const createRocket1 = () => {
         }));
 
     // Add all Rocket in one body
-    rocket.add(launchCylinder1);
-    rocket.add(launchCylinder2);
-    rocket.add(bodyCylinder1);
-    rocket.add(rollCylinder1);
-    rocket.add(bodyCylinder2);
-    rocket.add(rollCylinder2);
-    rocket.add(bodyCylinder3);
-    rocket.add(rollCylinder3);
-    rocket.add(headRocket);
+    rocket1.add(launchCylinder1);
+    rocket1.add(launchCylinder2);
+    rocket1.add(bodyCylinder1);
+    rocket1.add(rollCylinder1);
+    rocket1.add(bodyCylinder2);
+    rocket1.add(rollCylinder2);
+    rocket1.add(bodyCylinder3);
+    rocket1.add(rollCylinder3);
+    rocket1.add(headRocket);
 
 
     launchCylinder1.position.y = 2.3;
@@ -297,45 +258,34 @@ const createRocket1 = () => {
     rollCylinder3.position.y = 17.7;
     headRocket.position.y = 18.2;
 
-    rocket.position.y = 0;
+    rocket1.position.y = 0;
 
 
-    window.addEventListener('keypress', (event) => {
-        switch (event.key) {
-            case 'w':
-                rocket.position.y++;
-                break;
-            case 's':
-                rocket.position.y--;
-                break;
-
-        }
-    })
 }
 
 const createRocket2 = () => {
 
-    const rocket2MetrialTexture = textureLoader.load('static/textures/rocket/bodyRocket2/Material.jpg');
+    // const rocket2MetrialTexture = textureLoader.load('static/textures/rocket/bodyRocket2/Material.jpg');
     const rocket2ColorTexture = textureLoader.load('/textures/rocket/bodyRocket2/Plastic_basecolor.jpg');
     const rocket2AmbientTexture = textureLoader.load('/textures/rocket/bodyRocket2/Plastic_ambientOcclusion.jpg');
     const rocket2NormalTexture = textureLoader.load('/textures/rocket/bodyRocket2/Plastic_normal.jpg');
     const rocket2roughnessTexture = textureLoader.load('/textures/rocket/bodyRocket2/Plastic_roughness.jpg');
-    const rollMetrialTexture = textureLoader.load('static/textures/rocket/bodyRocket2/Material_roll.jpg');
+    // const rollMetrialTexture = textureLoader.load('static/textures/rocket/bodyRocket2/Material_roll.jpg');
     const rollColorTexture = textureLoader.load('/textures/rocket/bodyRocket2/Metal_basecolor.jpg');
     const rollAmbientTexture = textureLoader.load('/textures/rocket/bodyRocket2/Metal_ambientOcclusion.jpg');
     const rollNormalTexture = textureLoader.load('/textures/rocket/bodyRocket2/Metal_normal.jpg');
     const rollroughnessTexture = textureLoader.load('/textures/rocket/bodyRocket2/Metal_roughness.jpg');
-    const rocket2 = new THREE.Group()
+
     scene.add(rocket2);
 
 
     const baseColumn1 = new THREE.Mesh(
-        new THREE.CylinderGeometry(radius - 0.9, radius - 0.3, 1, 50),
+        new THREE.CylinderGeometry(radius - 0.9, radius - 0.3, h - 4, 50),
         new THREE.MeshStandardMaterial({
             map: rollColorTexture,
             normalMap: rollNormalTexture,
-            metalnessMap: rollMetrialTexture,
-            metalness: 1.1,
+            // metalnessMap: rollMetrialTexture,
+            // metalness: 1.1,
             aoMap: rollAmbientTexture,
             roughnessMap: rollroughnessTexture,
             roughness: 32,
@@ -343,12 +293,12 @@ const createRocket2 = () => {
         }));
 
     const body1 = new THREE.Mesh(
-        new THREE.CylinderGeometry(radius, radius, 5, 50),
+        new THREE.CylinderGeometry(radius, radius, h, 50),
         new THREE.MeshStandardMaterial({
             map: rocket2ColorTexture,
             normalMap: rocket2NormalTexture,
-            metalnessMap: rocket2MetrialTexture,
-            metalness: 0.1,
+            // metalnessMap: rocket2MetrialTexture,
+            // metalness: 0.1,
             aoMap: rocket2AmbientTexture,
             roughnessMap: rocket2roughnessTexture,
             roughness: 32,
@@ -356,12 +306,12 @@ const createRocket2 = () => {
         }));
 
     const roll1 = new THREE.Mesh(
-        new THREE.CylinderGeometry(radius, radius, 0.5, 50),
+        new THREE.CylinderGeometry(radius, radius, h - 4.5, 50),
         new THREE.MeshStandardMaterial({
             map: rollColorTexture,
             normalMap: rollNormalTexture,
-            metalnessMap: rollMetrialTexture,
-            metalness: 1.1,
+            // metalnessMap: rollMetrialTexture,
+            // metalness: 1.1,
             aoMap: rollAmbientTexture,
             roughnessMap: rollroughnessTexture,
             roughness: 32,
@@ -369,12 +319,12 @@ const createRocket2 = () => {
         }));
 
     const body2 = new THREE.Mesh(
-        new THREE.CylinderGeometry(radius, radius, 3, 50),
+        new THREE.CylinderGeometry(radius, radius, h - 2, 50),
         new THREE.MeshStandardMaterial({
             map: rocket2ColorTexture,
             normalMap: rocket2NormalTexture,
-            metalnessMap: rocket2MetrialTexture,
-            metalness: 0.1,
+            // metalnessMap: rocket2MetrialTexture,
+            // metalness: 0.1,
             aoMap: rocket2AmbientTexture,
             roughnessMap: rocket2roughnessTexture,
             roughness: 32,
@@ -382,12 +332,12 @@ const createRocket2 = () => {
         }));
 
     const roll2 = new THREE.Mesh(
-        new THREE.CylinderGeometry(radius, radius, 0.5, 50),
+        new THREE.CylinderGeometry(radius, radius, h - 4.5, 50),
         new THREE.MeshStandardMaterial({
             map: rollColorTexture,
             normalMap: rollNormalTexture,
-            metalnessMap: rollMetrialTexture,
-            metalness: 0.1,
+            // metalnessMap: rollMetrialTexture,
+            // metalness: 0.1,
             aoMap: rollAmbientTexture,
             roughnessMap: rollroughnessTexture,
             roughness: 32,
@@ -396,24 +346,24 @@ const createRocket2 = () => {
         }));
 
     const body3 = new THREE.Mesh(
-        new THREE.CylinderGeometry(radius - 0.4, radius, 1.2, 50),
+        new THREE.CylinderGeometry(radius - 0.4, radius, h - 3.75, 50),
         new THREE.MeshStandardMaterial({
             map: rocket2ColorTexture,
             normalMap: rocket2NormalTexture,
-            metalnessMap: rocket2MetrialTexture,
-            metalness: 0.1,
+            // metalnessMap: rocket2MetrialTexture,
+            // metalness: 0.1,
             aoMap: rocket2AmbientTexture,
             roughnessMap: rocket2roughnessTexture,
             roughness: 32,
         }));
 
     const roll3 = new THREE.Mesh(
-        new THREE.CylinderGeometry(radius - 0.6, radius - 0.33, 0.5, 50),
+        new THREE.CylinderGeometry(radius - 0.6, radius - 0.33, h - 4.5, 50),
         new THREE.MeshStandardMaterial({
             map: rollColorTexture,
             normalMap: rollNormalTexture,
-            metalnessMap: rollMetrialTexture,
-            metalness: 0.1,
+            // metalnessMap: rollMetrialTexture,
+            // metalness: 0.1,
             aoMap: rollAmbientTexture,
             roughnessMap: rollroughnessTexture,
             roughness: 32,
@@ -421,23 +371,23 @@ const createRocket2 = () => {
 
 
     const body4 = new THREE.Mesh(
-        new THREE.CylinderGeometry(radius - 1.1, radius - 0.6, 0.7, 50),
+        new THREE.CylinderGeometry(radius - 1.1, radius - 0.6, h - 4.3, 50),
         new THREE.MeshStandardMaterial({
             map: rocket2ColorTexture,
             normalMap: rocket2NormalTexture,
-            metalnessMap: rocket2MetrialTexture,
-            metalness: 0.1,
+            // metalnessMap: rocket2MetrialTexture,
+            // metalness: 0.1,
             aoMap: rocket2AmbientTexture,
             roughnessMap: rocket2roughnessTexture,
             roughness: 32,
         }));
     const header = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.01, radius - 1, 0.6, 50),
+        new THREE.CylinderGeometry(0.01, radius - 1, h - 4.4, 50),
         new THREE.MeshStandardMaterial({
             map: rocket2ColorTexture,
             normalMap: rocket2NormalTexture,
-            metalnessMap: rocket2MetrialTexture,
-            metalness: 0.1,
+            // metalnessMap: rocket2MetrialTexture,
+            // metalness: 0.1,
             aoMap: rocket2AmbientTexture,
             roughnessMap: rocket2roughnessTexture,
             roughness: 32,
@@ -448,8 +398,8 @@ const createRocket2 = () => {
         new THREE.MeshStandardMaterial({
             map: rocket2ColorTexture,
             normalMap: rocket2NormalTexture,
-            metalnessMap: rocket2MetrialTexture,
-            metalness: 0.1,
+            // metalnessMap: rocket2MetrialTexture,
+            // metalness: 0.1,
             aoMap: rocket2AmbientTexture,
             roughnessMap: rocket2roughnessTexture,
             roughness: 32,
@@ -459,30 +409,30 @@ const createRocket2 = () => {
         new THREE.MeshStandardMaterial({
             map: rocket2ColorTexture,
             normalMap: rocket2NormalTexture,
-            metalnessMap: rocket2MetrialTexture,
-            metalness: 0.1,
+            // metalnessMap: rocket2MetrialTexture,
+            // metalness: 0.1,
             aoMap: rocket2AmbientTexture,
             roughnessMap: rocket2roughnessTexture,
             roughness: 32,
         }));
     const engineRight = new THREE.Mesh(
-        new THREE.CylinderGeometry(radius - 1.1, radius - 0.9, 2, 50),
+        new THREE.CylinderGeometry(radius - 1.1, radius - 0.9, h - 3, 50),
         new THREE.MeshStandardMaterial({
             map: rocket2ColorTexture,
             normalMap: rocket2NormalTexture,
-            metalnessMap: rocket2MetrialTexture,
-            metalness: 0.1,
+            // metalnessMap: rocket2MetrialTexture,
+            // metalness: 0.1,
             aoMap: rocket2AmbientTexture,
             roughnessMap: rocket2roughnessTexture,
             roughness: 32,
         }));
     const engineLeft = new THREE.Mesh(
-        new THREE.CylinderGeometry(radius - 1.1, radius - 0.9, 2, 50),
+        new THREE.CylinderGeometry(radius - 1.1, radius - 0.9, h - 3, 50),
         new THREE.MeshStandardMaterial({
             map: rocket2ColorTexture,
             normalMap: rocket2NormalTexture,
-            metalnessMap: rocket2MetrialTexture,
-            metalness: 0.1,
+            // metalnessMap: rocket2MetrialTexture,
+            // metalness: 0.1,
             aoMap: rocket2AmbientTexture,
             roughnessMap: rocket2roughnessTexture,
             roughness: 32,
@@ -523,190 +473,6 @@ const createRocket2 = () => {
     rocket2.add(engineLeft);
     rocket2.add(engineRight);
     rocket2.position.y = 0;
-    window.addEventListener('keypress', (event) => {
-        switch (event.key) {
-            case 'w':
-                rocket2.position.y += 3;
-                break;
-            case 's':
-                rocket2.position.y--;
-                break;
-
-        }
-    })
-}
-
-const CreateRocket3 = () => {
-
-    const rocket3MetrialTexture = textureLoader.load('static/textures/rocket/bodyRocket3/Material.jpg');
-    const rocket3ColorTexture = textureLoader.load('/textures/rocket/bodyRocket3/Metal_basecolor.jpg');
-    const rocket3AmbientTexture = textureLoader.load('/textures/rocket/bodyRocket3/Metal_ambientOcclusion.jpg');
-    const rocket3MetaliicTexture = textureLoader.load('/textures/rocket/bodyRocket3/Metal_metallic.jpg');
-    const rocket3HeightTexture = textureLoader.load('/textures/rocket/bodyRocket3/Metal_height.png');
-    const rocket3NormalTexture = textureLoader.load('/textures/rocket/bodyRocket3/Metal_normal.jpg');
-    const rocket3roughnessTexture = textureLoader.load('/textures/rocket/bodyRocket3/Metal_roughness.jpg');
-
-
-    const baseMetrialTexture = textureLoader.load('static/textures/rocket/bodyRocket3/Material_Base.jpg');
-    const baseColorTexture = textureLoader.load('/textures/rocket/bodyRocket3/Base_basecolor.jpg');
-    const baseAmbientTexture = textureLoader.load('/textures/rocket/bodyRocket3/Base_ambientOcclusion.jpg');
-    const baseMetaliicTexture = textureLoader.load('/textures/rocket/bodyRocket3/Base_metallic.jpg');
-    const baseHeightTexture = textureLoader.load('/textures/rocket/bodyRocket3/Base_height.png');
-    const baseNormalTexture = textureLoader.load('/textures/rocket/bodyRocket3/Base_normal.jpg');
-    const baseroughnessTexture = textureLoader.load('/textures/rocket/bodyRocket3/Base_roughness.jpg');
-
-    const rocket3 = new THREE.Group()
-    scene.add(rocket3)
-
-    const baseRocket = new THREE.Mesh(
-        new THREE.CylinderGeometry(1.5, 1.5, 2, 50),
-        new THREE.MeshStandardMaterial({
-            map: baseColorTexture,
-            normalMap: baseNormalTexture,
-            metalnessMap: baseMetrialTexture,
-            metalness: 1.1,
-            aoMap: baseAmbientTexture,
-            roughnessMap: baseroughnessTexture,
-            roughness: 2,
-
-        }));
-
-    const baseColumn1 = new THREE.Mesh(
-        new THREE.CylinderGeometry(1, 1.44, 0.3, 50),
-        new THREE.MeshStandardMaterial({
-            map: rocket3ColorTexture,
-            normalMap: rocket3NormalTexture,
-            metalnessMap: rocket3MetrialTexture,
-            metalness: 1.1,
-            aoMap: rocket3AmbientTexture,
-            roughnessMap: rocket3roughnessTexture,
-            roughness: 2,
-
-        }));
-
-    const Column = new THREE.Mesh(
-        new THREE.CylinderGeometry(1, 1, 2, 50),
-        new THREE.MeshStandardMaterial({
-            map: rocket3ColorTexture,
-            normalMap: rocket3NormalTexture,
-            metalnessMap: rocket3MetrialTexture,
-            metalness: 1.1,
-            aoMap: rocket3AmbientTexture,
-            roughnessMap: rocket3roughnessTexture,
-            roughness: 2,
-
-        }));
-
-    const baseColumn2 = new THREE.Mesh(
-        new THREE.CylinderGeometry(1.44, 1, 0.3, 50),
-        new THREE.MeshStandardMaterial({
-            map: rocket3ColorTexture,
-            normalMap: rocket3NormalTexture,
-            metalnessMap: rocket3MetrialTexture,
-            metalness: 1.1,
-            aoMap: rocket3AmbientTexture,
-            roughnessMap: rocket3roughnessTexture,
-            roughness: 2,
-
-        }));
-
-    const bodyRocket = new THREE.Mesh(
-        new THREE.CylinderGeometry(1.5, 1.5, 6, 50),
-        new THREE.MeshStandardMaterial({
-            map: rocket3ColorTexture,
-            normalMap: rocket3NormalTexture,
-            metalnessMap: rocket3MetrialTexture,
-            metalness: 1.1,
-            aoMap: rocket3AmbientTexture,
-            roughnessMap: rocket3roughnessTexture,
-            roughness: 2,
-
-        }));
-
-    const bodyRocket2 = new THREE.Mesh(
-        new THREE.CylinderGeometry(1.3, 1.5, 2, 50),
-        new THREE.MeshStandardMaterial({
-            map: rocket3ColorTexture,
-            normalMap: rocket3NormalTexture,
-            metalnessMap: rocket3MetrialTexture,
-            metalness: 1.1,
-            aoMap: rocket3AmbientTexture,
-            roughnessMap: rocket3roughnessTexture,
-            roughness: 2,
-
-        }));
-
-    const bodyRocket3 = new THREE.Mesh(
-        new THREE.CylinderGeometry(1.1, 1.3, 1.5, 50),
-        new THREE.MeshStandardMaterial({
-            map: rocket3ColorTexture,
-            normalMap: rocket3NormalTexture,
-            metalnessMap: rocket3MetrialTexture,
-            metalness: 1.1,
-            // aoMap: rocket3AmbientTexture,
-            roughnessMap: rocket3roughnessTexture,
-            roughness: 12,
-
-        }));
-
-    const HeaderRocket1 = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.9, 1.1, 1, 50),
-        new THREE.MeshStandardMaterial({
-            map: rocket3ColorTexture,
-            normalMap: rocket3NormalTexture,
-            metalnessMap: rocket3MetrialTexture,
-            metalness: 1.1,
-            //   aoMap: rocket3AmbientTexture,
-            roughnessMap: rocket3roughnessTexture,
-            roughness: 12,
-
-        }));
-
-    const HeaderRocket2 = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.6, 0.9, 0.6, 50),
-        new THREE.MeshStandardMaterial({
-            map: baseColorTexture,
-            normalMap: baseNormalTexture,
-            metalnessMap: baseMetrialTexture,
-            metalness: 1.1,
-            aoMap: baseAmbientTexture,
-            roughnessMap: baseroughnessTexture,
-            roughness: 2,
-        }));
-
-    const HeaderRocket3 = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.1, 0.6, 0.4, 50),
-        new THREE.MeshStandardMaterial({
-            map: baseColorTexture,
-            normalMap: baseNormalTexture,
-            metalnessMap: baseMetrialTexture,
-            metalness: 1.1,
-            aoMap: baseAmbientTexture,
-            roughnessMap: baseroughnessTexture,
-            roughness: 2,
-        }));
-
-    baseRocket.position.y = 5;
-    baseColumn1.position.y = 6.2;
-    baseColumn2.position.y = 8.2;
-    Column.position.y = 7.2;
-    bodyRocket.position.y = 11.34;
-    bodyRocket2.position.y = 15.34;
-    bodyRocket3.position.y = 17;
-    HeaderRocket1.position.y = 18.2;
-    HeaderRocket2.position.y = 19;
-    HeaderRocket3.position.y = 19.5;
-    rocket3.add(baseRocket);
-    rocket3.add(baseColumn1);
-    rocket3.add(baseColumn2);
-    rocket3.add(Column);
-    rocket3.add(bodyRocket);
-    rocket3.add(bodyRocket2);
-    rocket3.add(bodyRocket3);
-    rocket3.add(HeaderRocket1);
-    rocket3.add(HeaderRocket2);
-    rocket3.add(HeaderRocket3);
-
 
 }
 
@@ -741,112 +507,15 @@ const createLaunch = () => {
 
 }
 
-const createLaunch1 = () => {
-
-    const launchColorTexture = textureLoader.load('/textures/launchpad/launch1/Wall_BaseColor.jpg');
-    const launchHeightTexture = textureLoader.load('/textures/launchpad/launch1/Wall_Height.png');
-    const launchNormalTexture = textureLoader.load('/textures/launchpad/launch1/Wall_Normal.jpg');
-    const launchRoughnessTexture = textureLoader.load('/textures/launchpad/launch1/Wall_Roughness.jpg');
-    const launchMetrialTexture = textureLoader.load('/textures/launchpad/launch1/Wall_metrial.jpg');
-    // Group
-    const lunch = new THREE.Group()
-    scene.add(lunch);
-
-    const base = new THREE.Mesh(new THREE.BoxBufferGeometry(9, 6, 9.5),
-        new THREE.MeshStandardMaterial({
-            map: launchColorTexture,
-            normalMap: launchNormalTexture,
-            metalnessMap: launchMetrialTexture,
-            metalness: 0.1,
-            displacementMap: launchHeightTexture,
-            displacementScale: 0.002,
-            roughnessMap: launchRoughnessTexture,
-            roughness: 32
-        }));
-
-    const base1 = new THREE.Mesh(new THREE.PlaneBufferGeometry(2, 1, 4),
-        new THREE.MeshBasicMaterial({ color: 0xD6D6D6 }));
-
-    lunch.add(base);
-    lunch.add(base1);
-
-    base.position.y = 3;
-    base1.position.z = 2.8;
-    base1.position.y = 1.5;
+function init() {
+    createScene();
+    // createRocket1();
+    createRocket2();
+    createLaunch();
 
 }
 
-/**
- * Galaxy
- */
-
-const generateGalaxy = () => {
-    // Destroy old galaxy
-    if (points !== null) {
-        geometry.dispose()
-        material.dispose()
-        scene.remove(points)
-    }
-
-    /**
-     * Geometry
-     */
-    geometry = new THREE.BufferGeometry()
-
-    const positions = new Float32Array(parameters.count * 3)
-    const colors = new Float32Array(parameters.count * 3)
-
-    const colorInside = new THREE.Color(parameters.insideColor)
-    const colorOutside = new THREE.Color(parameters.outsideColor)
-
-    for (let i = 0; i < parameters.count; i++) {
-        // Position
-        const i3 = i * 9
-
-        const radius = Math.random() * parameters.radius
-
-        const spinAngle = radius * parameters.spin
-        const branchAngle = (i % parameters.branches) / parameters.branches * Math.PI * 2
-
-        const randomX = Math.pow(Math.random(), parameters.randomnessPower) * (Math.random() < 0.5 ? 1 : -1) * parameters.randomness * radius
-        const randomY = Math.pow(Math.random(), parameters.randomnessPower) * (Math.random() < 0.5 ? 1 : -1) * parameters.randomness * radius * 200
-        const randomZ = Math.pow(Math.random(), parameters.randomnessPower) * (Math.random() < 0.5 ? 1 : -1) * parameters.randomness * radius
-
-        positions[i3] = Math.cos(branchAngle + spinAngle) * radius + randomX * 12
-        positions[i3 + 1] = randomY
-        positions[i3 + 2] = Math.sin(branchAngle + spinAngle) * radius + randomZ
-
-        // Color
-        const mixedColor = colorInside.clone()
-        mixedColor.lerp(colorOutside, radius / parameters.radius)
-
-        colors[i3] = mixedColor.r
-        colors[i3 + 1] = mixedColor.g
-        colors[i3 + 2] = mixedColor.b
-    }
-
-    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 4))
-    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3))
-
-    /**
-     * Material
-     */
-    material = new THREE.PointsMaterial({
-        size: parameters.size,
-        sizeAttenuation: true,
-        depthWrite: false,
-        blending: THREE.AdditiveBlending,
-        vertexColors: true
-    })
-
-    /**
-     * Points
-     */
-    points = new THREE.Points(geometry, material)
-    points.position.y = 33;
-    scene.add(points)
-}
-
+init()
 
 /**
  * Sizes
@@ -856,7 +525,7 @@ const sizes = {
     height: window.innerHeight
 }
 
-window.addEventListener('resize', init => {
+window.addEventListener('resize', () => {
     // Update sizes
     sizes.width = window.innerWidth
     sizes.height = window.innerHeight
@@ -881,11 +550,9 @@ camera.position.z = 0
 scene.add(camera)
 
 // Controls
-const controls = new OrbitControls(camera, canvas)
-controls.target.set(0, 0.75, 0)
-controls.enableDamping = true
-
-
+// const controls = new OrbitControls(camera, canvas)
+// controls.maxPolarAngle = Math.PI / 3;
+// controls.enableDamping = true
 
 /**
  * Renderer
@@ -893,28 +560,210 @@ controls.enableDamping = true
 const renderer = new THREE.WebGLRenderer({
     canvas: canvas
 })
-document.body.appendChild(renderer.domElement)
-
 renderer.setSize(sizes.width, sizes.height)
+renderer.setClearColor('#06070E')
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-    //renderer.setClearColor('#262837')
+
+/**
+ * Animate
+ */
+const clock = new THREE.Clock()
+
+// rocket object instance
+const rocket = new Rocket()
+
+// get inputs
+const rocket_panel = gui.addFolder('Rocket Control Panel')
+rocket_panel.add(rocket, 'rocket_mass').name('empty rocket mass in (tons)').min(1).max(300).step(1)
+rocket_panel.add(rocket, 'fuel_mass')
+    .name('initial fuel mass in (tons)')
+    .min(0)
+    .max(1000).step(1)
+    .onFinishChange(() => {
+        rocket.total_mass = (rocket.rocket_mass + rocket.fuel_mass) * Math.pow(10, 3)
+    })
+rocket_panel.add(rocket, 'thrust')
+    .name('thrust')
+    .min(1)
+    .max(35)
+    .step(0.001)
+    .onFinishChange(() => {
+        rocket.total_mass = (rocket.rocket_mass + rocket.fuel_mass) * Math.pow(10, 3)
+    }) // in a thousand of newtons
+
+rocket_panel.add(rocket, 'nozzle_angle')
+    .name('nozzle angle (XY)')
+    .min(-Math.PI * (1 / 6))
+    .max(Math.PI * (1 / 6))
+    .step(0.001)
+rocket_panel.add(rocket, 'rocket_length').name('height rocket').min(3).max(15).step(0.1).onChange(() => {
+    h = rocket.rocket_length
+})
+
+rocket_panel.add(rocket, 'mass_flow_rate').name('mass flow rate').min(10).max(500).step(1) // in kg/s
+rocket_panel.add(rocket, 'radius').name('rocket radius').min(1).max(5).step(0.01)
+
+// enable and disable forces
+rocket_panel.add(rocket, 'gravity_enabled').name('Enable Gravity')
+rocket_panel.add(rocket, 'drag_enabled').name('Enable Drag')
+rocket_panel.add(rocket, 'engine_running').name('Run Rocket Engine')
+rocket_panel.open()
 
 
+// rocket calculation outputs
+let outputs = {
 
+    // acceleration
+    accX: rocket.acceleration.getX(),
+    accY: rocket.acceleration.getY(),
+    accZ: rocket.acceleration.getZ(),
+
+    // velocity
+    veloX: rocket.velocity.getX(),
+    veloY: rocket.velocity.getY(),
+    veloZ: rocket.velocity.getZ(),
+
+    // position
+    posX: rocket.position.getX(),
+    posY: rocket.position.getY(),
+    posZ: rocket.position.getZ(),
+
+    gravity: rocket.gravity_acc,
+    thrust: rocket.thrust,
+    mass: rocket.total_mass,
+    burnout_time: rocket.burnout_time,
+}
+
+// Show output results in debug ui
+const output_panel = gui.addFolder('Rocket Processing Outputs')
+
+output_panel.add(outputs, 'gravity').name('Universal Gravity').step(0.0001)
+output_panel.add(outputs, 'mass').name('Current Rocket Mass').step(0.01)
+output_panel.add(outputs, 'burnout_time').name('Engine running time').step(0.01)
+
+const acc_ui = output_panel.addFolder('Acceleration')
+acc_ui.add(outputs, 'accX').name('X').step(0.0001)
+acc_ui.add(outputs, 'accY').name('Y').step(0.0001)
+acc_ui.add(outputs, 'accZ').name('Z').step(0.0001)
+
+const velo_ui = output_panel.addFolder('Velocity')
+velo_ui.add(outputs, 'veloX').name('X').step(0.01)
+velo_ui.add(outputs, 'veloY').name('Y').step(0.01)
+velo_ui.add(outputs, 'veloZ').name('Z').step(0.01)
+
+const pos_ui = output_panel.addFolder('Position')
+pos_ui.add(outputs, 'posX').name('X').step(0.1)
+pos_ui.add(outputs, 'posY').name('Y').step(0.1)
+pos_ui.add(outputs, 'posZ').name('Z').step(0.1)
+
+
+output_panel.open()
+acc_ui.open()
+velo_ui.open()
+pos_ui.open()
+
+
+function updateOutputs() {
+
+    // refresh acceleration
+    outputs.accX = rocket.acceleration.getX()
+    outputs.accY = rocket.acceleration.getY()
+    outputs.accZ = rocket.acceleration.getZ()
+
+    // refresh velocity
+    outputs.veloX = rocket.velocity.getX()
+    outputs.veloY = rocket.velocity.getY()
+    outputs.veloZ = rocket.velocity.getZ()
+
+    // refresh displacement
+    outputs.posX = rocket.position.getX()
+    outputs.posY = rocket.position.getY()
+    outputs.posZ = rocket.position.getZ()
+
+    outputs.gravity = rocket.gravity_acc
+    outputs.thrust = rocket.thrust
+    outputs.mass = rocket.total_mass
+    outputs.burnout_time = rocket.burnout_time
+}
+
+let oldElapsedTime = 0
 
 const tick = () => {
 
 
+    // delta Time
+    const elapsedTime = clock.getElapsedTime()
+
+    rocket.rocket_length = h
+
+    const deltaTime = elapsedTime - oldElapsedTime
+    oldElapsedTime = elapsedTime
+
+    rocket.deltaTime = deltaTime
+
+    // if (currentAngle !== (rocket.nozzle_angle))
+    //     currentAngle += rocket.nozzle_angle * deltaTime * 0.1
+    //
+
+    // rocket2.rotation.z = (Math.PI / 2) - angle
+    //
+    // currentAngle += (rocket.nozzle_angle * deltaTime)
+    // rocket.nozzle_angle -= rocket.nozzle_angle * deltaTime
+
+
+    rocket2.position.set(
+        rocket.position.getX() * 0.06,
+        rocket.position.getY() * 0.06,
+        rocket.position.getZ() * 0.06
+    )
+
+
+
+    rocket1.position.set(
+        rocket.position.getX() * 0.06,
+        rocket.position.getY() * 0.06,
+        rocket.position.getZ() * 0.06
+    )
+
+
+
+    // rocket.nozzle_angle -= alpha
+    const ang1 = (rocket.position.getAngleXY() - vector.create(rocket.position.x, 0, 0).getAngleXY())
+
+    const ang2 = (rocket.velocity.getAngleXY() - vector.create(rocket.velocity.x, 0, 0).getAngleXY())
+    const alpha = ang1 - ang2
+
+    // rocket.nozzle_angle = ang1 - (Math.PI / 2)
+    rocket1.rotation.z = rocket.ang
+
+
+    console.log('alpha: ' + alpha)
+    camera.position.set(
+        rocket2.position.x,
+        rocket2.position.y + 10, rocket2.position.z - 30)
+    camera.lookAt(rocket2.position)
+
+
+    camera.position.set(
+        rocket1.position.x,
+        rocket1.position.y + 10, rocket1.position.z - 30)
+    camera.lookAt(rocket1.position)
+    rocket.update()
+
+    updateOutputs()
+
+    // refresh debug ui
+    output_panel.updateDisplay()
+
+
     // Update controls
-    controls.update()
+    // controls.update()
 
     // Render
     renderer.render(scene, camera)
 
     // Call tick again on the next frame
     window.requestAnimationFrame(tick)
-
-
 }
 
 tick()
